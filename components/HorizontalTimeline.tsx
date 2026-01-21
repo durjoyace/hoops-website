@@ -129,16 +129,11 @@ export default function HorizontalTimeline() {
         {/* Progress indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
           {timelineEvents.map((event, index) => (
-            <motion.div
+            <ProgressDot
               key={event.year}
-              className="w-2 h-2 rounded-full bg-gray-700"
-              style={{
-                backgroundColor: useTransform(
-                  scrollYProgress,
-                  [(index - 0.5) / timelineEvents.length, index / timelineEvents.length],
-                  ['#374151', '#FF6B35']
-                ),
-              }}
+              index={index}
+              totalEvents={timelineEvents.length}
+              scrollProgress={scrollYProgress}
             />
           ))}
         </div>
@@ -154,6 +149,29 @@ export default function HorizontalTimeline() {
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function ProgressDot({
+  index,
+  totalEvents,
+  scrollProgress,
+}: {
+  index: number;
+  totalEvents: number;
+  scrollProgress: any;
+}) {
+  const backgroundColor = useTransform(
+    scrollProgress,
+    [(index - 0.5) / totalEvents, index / totalEvents],
+    ['#374151', '#FF6B35']
+  );
+
+  return (
+    <motion.div
+      className="w-2 h-2 rounded-full bg-gray-700"
+      style={{ backgroundColor }}
+    />
   );
 }
 

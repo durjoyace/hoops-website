@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Bebas_Neue } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
@@ -8,17 +8,31 @@ import SmoothScroll from '@/components/SmoothScroll'
 import CustomCursor from '@/components/CustomCursor'
 import DonationTicker from '@/components/DonationTicker'
 
-const inter = Inter({
-  subsets: ['latin'],
+// Using system font stacks for reliability (no external font fetching required)
+const inter = localFont({
+  src: [
+    {
+      path: '../node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
   variable: '--font-inter',
   display: 'swap',
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
 })
 
-const bebasNeue = Bebas_Neue({
-  weight: '400',
-  subsets: ['latin'],
+const bebasNeue = localFont({
+  src: [
+    {
+      path: '../node_modules/@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
   variable: '--font-bebas',
   display: 'swap',
+  fallback: ['Impact', 'Haettenschweiler', 'Arial Narrow Bold', 'sans-serif'],
 })
 
 export const metadata: Metadata = {
