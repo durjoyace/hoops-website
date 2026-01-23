@@ -20,7 +20,6 @@ export const newsArticles: NewsArticle[] = [
     excerpt: 'We ran programs in Mumbai in conjunction with the historic NBA Games in India, bringing international recognition to our mission.',
     date: '2019-10-04',
     category: 'press',
-    image: '/images/news/nba-india.jpg',
   },
   {
     id: 'hyderabad-expansion-2022',

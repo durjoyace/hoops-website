@@ -9,13 +9,15 @@ import { images, siteConfig } from '@/lib/utils'
 
 const categories = ['all', 'press', 'update', 'event', 'feature'] as const
 
+const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+]
+
 function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  // Parse date parts directly to avoid timezone issues
+  const [year, month, day] = dateString.split('-').map(Number)
+  return `${monthNames[month - 1]} ${day}, ${year}`
 }
 
 function NewsCard({ article, index }: { article: NewsArticle; index: number }) {
