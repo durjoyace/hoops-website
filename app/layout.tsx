@@ -22,6 +22,7 @@ const bebasNeue = Bebas_Neue({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://hoopscreatinghope.org'),
   title: {
     default: 'Hoops Creating Hope — Basketball + Education for Underserved Youth in India',
     template: '%s | Hoops Creating Hope',
