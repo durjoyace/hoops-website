@@ -18,6 +18,7 @@ import FundraisingProgress from '@/components/FundraisingProgress';
 import ImpactSlider, { ImpactComparison } from '@/components/ImpactSlider';
 import IndiaMap from '@/components/IndiaMap';
 import { RevealWrapper, ParallaxImage, ZoomImage } from '@/components/ImageReveal';
+import { PinkOverlayLayer } from '@/components/PinkOverlay';
 
 // Stats data
 const stats = [
@@ -35,13 +36,15 @@ const programs = [
     icon: GraduationCap,
     color: 'from-orange-primary to-orange-light',
     image: images.coachHighFive,
+    link: '/programs',
   },
   {
-    title: 'Scholars Program',
-    description: 'Full educational support for our most promising student-athletes.',
+    title: 'Crossover Scholars Program',
+    description: 'Intensive 2-week summer academy with leadership development, college prep, basketball coaching, and local coaches clinics.',
     icon: Users,
     color: 'from-purple-accent to-orange-primary',
     image: images.portrait,
+    link: '/programs',
   },
   {
     title: 'Community Courts',
@@ -49,6 +52,21 @@ const programs = [
     icon: MapPin,
     color: 'from-orange-light to-purple-accent',
     image: images.outdoorCourt,
+    link: '/fundraise',
+  },
+];
+
+// Additional impact stats for underserved demographics
+const additionalStats = [
+  {
+    stat: '1-5%',
+    label: 'Girls in sports programs for families under $5/day',
+    description: 'We\'re changing this: 60% of our participants are girls',
+  },
+  {
+    stat: '5-12%',
+    label: 'College attendance for boys & girls in families under $5/day',
+    description: 'Our students beat the odds with 85% high school completion',
   },
 ];
 
@@ -64,6 +82,7 @@ export default function HomePage() {
         videoSrc="/videos/hero-bg.mp4"
         fallbackImage={images.hero}
         overlayOpacity={0.7}
+        pinkOverlay={true}
       >
         <div className="h-full flex flex-col items-center justify-center px-6 max-w-6xl mx-auto">
           {/* Particle effects */}
@@ -123,9 +142,13 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-12 font-medium text-center"
+            className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-12 font-medium text-center"
           >
-            Empowering 2,500+ underserved youth in India through basketball, education, and life skills
+            Basketball Isn&apos;t Just a Game — It&apos;s a Pathway to Opportunity in India.
+            <br className="hidden sm:block" />
+            <span className="text-white/70">
+              We empower underserved youth in India with basketball, mentorship &amp; life skills — leading to better education, leadership opportunities, and lifelong confidence
+            </span>
           </motion.p>
 
           {/* CTA Buttons */}
@@ -133,11 +156,11 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center relative z-20"
           >
             <MagneticButton
               href={siteConfig.donateUrl}
-              className="bg-gradient-to-r from-orange-primary to-orange-light text-black font-bold text-lg px-10 py-5 rounded-full flex items-center gap-2 shadow-glow"
+              className="bg-gradient-to-r from-orange-primary to-orange-light text-black font-bold text-lg px-10 py-5 rounded-full flex items-center gap-2 shadow-glow min-w-[180px] justify-center"
             >
               <Heart className="w-5 h-5" />
               Donate Now
@@ -145,7 +168,7 @@ export default function HomePage() {
 
             <MagneticButton
               onClick={() => setVideoOpen(true)}
-              className="glass border border-white/20 text-white font-bold text-lg px-10 py-5 rounded-full flex items-center gap-2 hover:border-orange-primary/50"
+              className="glass border-2 border-white/30 text-white font-bold text-lg px-10 py-5 rounded-full flex items-center gap-2 hover:border-orange-primary/50 hover:bg-white/10 min-w-[180px] justify-center backdrop-blur-sm"
               data-cursor="play"
             >
               <Play className="w-5 h-5" />
@@ -180,7 +203,7 @@ export default function HomePage() {
       </section>
 
       {/* IMPACT SLIDER - Before/After Comparison */}
-      <section className="py-32 px-6 bg-dark relative overflow-hidden">
+      <section className="py-16 md:py-24 px-6 bg-dark relative overflow-hidden">
         <GradientOrbs />
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-12">
@@ -210,10 +233,10 @@ export default function HomePage() {
       <HorizontalTimeline />
 
       {/* IMPACT STATS with Cards */}
-      <section ref={impactRef} className="py-32 px-6 relative bg-gradient-to-b from-dark-200 to-dark">
+      <section ref={impactRef} className="py-20 md:py-28 px-6 relative bg-gradient-to-b from-dark-200 to-dark">
         <FloatingBasketballs count={4} />
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12">
             <TextReveal>
               <p className="text-orange-primary font-bold uppercase tracking-widest mb-4">
                 Our Impact
@@ -249,13 +272,30 @@ export default function HomePage() {
             ))}
           </div>
 
+          {/* Additional Impact Stats - Underserved Demographics */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {additionalStats.map((item, index) => (
+              <div key={index} className="glass border border-orange-primary/20 rounded-2xl p-6 md:p-8">
+                <div className="text-3xl md:text-4xl font-display gradient-text mb-2">{item.stat}</div>
+                <p className="text-white font-semibold mb-2">{item.label}</p>
+                <p className="text-gray-400 text-sm">{item.description}</p>
+              </div>
+            ))}
+          </motion.div>
+
           {/* Comparison bars */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-20 glass border border-white/10 rounded-3xl p-8 md:p-12"
+            className="mt-12 glass border border-white/10 rounded-3xl p-8 md:p-12"
           >
             <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
               How We Compare
@@ -293,9 +333,9 @@ export default function HomePage() {
       </section>
 
       {/* PROGRAMS with Image Reveals */}
-      <section className="py-32 px-6 bg-gradient-to-b from-dark to-dark-200">
+      <section className="py-20 md:py-28 px-6 bg-gradient-to-b from-dark to-dark-200">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-20">
+          <div className="text-center mb-16">
             <TextReveal>
               <p className="text-orange-primary font-bold uppercase tracking-widest mb-4">
                 What We Do
@@ -304,6 +344,15 @@ export default function HomePage() {
             <h2 className="text-5xl md:text-7xl font-display text-white">
               <WordReveal text="Our Programs" delay={0.2} />
             </h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+              className="text-gray-400 mt-4 text-lg"
+            >
+              12 total programs so far across 3 cities in India
+            </motion.p>
           </div>
 
           <div className="space-y-24">
@@ -345,7 +394,7 @@ export default function HomePage() {
                     {program.description}
                   </p>
                   <MagneticButton
-                    href="/programs"
+                    href={program.link}
                     className="inline-flex items-center gap-2 text-orange-primary font-bold text-lg hover:gap-4 transition-all"
                   >
                     Learn More <ArrowRight className="w-5 h-5" />
@@ -490,12 +539,17 @@ export default function HomePage() {
             >
               ✕
             </button>
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-            />
+            <video
+              autoPlay
+              controls
+              className="w-full h-full object-contain"
+            >
+              <source
+                src="https://www.dropbox.com/scl/fi/ccz40ad6p330skc1d37lo/Hoops-Creating-Hope-Intro.MP4?rlkey=pf5q6xc5s4ih0rqd0pzvnllg8&st=nx5459br&raw=1"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
           </motion.div>
         </motion.div>
       )}

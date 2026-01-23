@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { ArrowRight, TrendingUp, Users, GraduationCap, Heart, Globe } from 'lucide-react'
+import { JerseyCardMini } from '@/components/JerseyCard'
 import { images, siteConfig } from '@/lib/utils'
 
 // Impact stats
@@ -20,6 +21,18 @@ const challengeStats = [
   { number: '76%', label: 'Never Reach Higher Education', description: 'The education gap that perpetuates poverty across generations' },
   { number: '62%', label: 'National Dropout Rate', description: 'For students aged 9-14—compared to our <15% rate' },
   { number: '735M+', label: 'Living on $3.10/Day or Less', description: 'Education is the pathway out of poverty for these families' },
+]
+
+// Jersey Repository - Impact Milestones
+const jerseyMilestones = [
+  { number: '85', title: '% Completion' },
+  { number: '2.5K', title: 'Students' },
+  { number: '60', title: '% Girls' },
+  { number: '3', title: 'Cities' },
+  { number: '12', title: 'Programs' },
+  { number: '14', title: 'Years' },
+  { number: '5.3', title: 'x Outcomes' },
+  { number: '45', title: 'First Cohort' },
 ]
 
 // Impact areas
@@ -279,6 +292,44 @@ export default function ImpactPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Jersey Repository - Impact Milestones */}
+      <section className="section-dark py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="text-orange-primary font-mono text-sm tracking-widest uppercase mb-4 block">
+              BY THE NUMBERS
+            </span>
+            <h2 className="section-title mb-6">Our Impact Wall</h2>
+            <p className="text-xl text-white/60 max-w-3xl mx-auto">
+              Every jersey represents a milestone in our journey to transform lives through basketball.
+            </p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center gap-6 md:gap-8"
+          >
+            {jerseyMilestones.map((milestone, index) => (
+              <motion.div
+                key={milestone.title}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <JerseyCardMini
+                  number={milestone.number}
+                  title={milestone.title}
+                  color={index % 3 === 0 ? 'orange' : index % 3 === 1 ? 'purple' : 'gradient'}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 

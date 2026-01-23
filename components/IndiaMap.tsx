@@ -57,7 +57,7 @@ export default function IndiaMap() {
     <div ref={ref} className="relative w-full max-w-4xl mx-auto">
       {/* Map container */}
       <div className="relative aspect-[4/5] md:aspect-[3/4]">
-        {/* India outline SVG */}
+        {/* India outline SVG - Improved shape */}
         <motion.svg
           viewBox="0 0 100 120"
           className="w-full h-full"
@@ -65,15 +65,37 @@ export default function IndiaMap() {
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8 }}
         >
-          {/* Simplified India outline */}
+          {/* More accurate India outline */}
           <motion.path
-            d="M50 5 L65 10 L75 20 L80 35 L78 50 L82 60 L75 75 L70 90 L60 100 L50 105 L40 100 L35 95 L30 85 L25 70 L20 55 L22 40 L25 25 L35 15 L50 5 Z"
-            fill="none"
+            d="M50 3 L58 5 L68 8 L75 12 L80 18 L82 25 L80 30 L78 35 L80 42 L82 48 L83 55 L80 62 L76 70 L72 78 L68 85 L62 92 L55 98 L48 103 L42 105 L38 103 L35 100 L32 95 L28 88 L25 80 L22 72 L20 65 L18 58 L17 50 L18 42 L20 35 L23 28 L27 22 L32 16 L38 10 L44 6 L50 3 Z"
+            fill="rgba(255, 107, 53, 0.05)"
             stroke="url(#mapGradient)"
-            strokeWidth="0.5"
+            strokeWidth="0.8"
             initial={{ pathLength: 0 }}
             animate={isInView ? { pathLength: 1 } : {}}
             transition={{ duration: 2, ease: 'easeInOut' }}
+          />
+
+          {/* Kashmir region accent */}
+          <motion.path
+            d="M38 10 L42 5 L50 3 L58 5 L52 12 L45 10 L38 10 Z"
+            fill="rgba(255, 107, 53, 0.1)"
+            stroke="url(#mapGradient)"
+            strokeWidth="0.4"
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 1, delay: 1 }}
+          />
+
+          {/* Southern tip (Kanyakumari) */}
+          <motion.circle
+            cx="48"
+            cy="103"
+            r="2"
+            fill="url(#mapGradient)"
+            initial={{ scale: 0 }}
+            animate={isInView ? { scale: 1 } : {}}
+            transition={{ duration: 0.5, delay: 2 }}
           />
 
           {/* Connection lines between cities */}

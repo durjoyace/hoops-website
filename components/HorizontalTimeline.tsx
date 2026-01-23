@@ -17,18 +17,18 @@ interface TimelineEvent {
 const timelineEvents: TimelineEvent[] = [
   {
     year: '2010',
-    title: 'The Beginning',
-    description: 'Shaun Jayachandran starts coaching basketball to underprivileged children in Chennai with just 15 students.',
-    stat: '15',
-    statLabel: 'First students',
+    title: 'Theory and Foundation',
+    description: 'Theory and NGO paperwork and board recruitment. Shaun Jayachandran develops the vision to use basketball as a tool for educational retention.',
+    stat: '1',
+    statLabel: 'Vision born',
     image: images.hero,
   },
   {
     year: '2012',
-    title: 'Hoops Creating Hope Founded',
-    description: 'Officially registered as a nonprofit with a mission to transform lives through basketball.',
-    stat: '100+',
-    statLabel: 'Students enrolled',
+    title: 'First Cohort',
+    description: 'First cohort: 45 kids at St. Patrick\'s Anglo-Indian Higher Secondary School. The model was simple but rigorous: basketball practice combined with mandatory study sessions.',
+    stat: '45',
+    statLabel: 'First students',
     image: images.outdoorCourt,
   },
   {
@@ -48,28 +48,28 @@ const timelineEvents: TimelineEvent[] = [
     image: images.twoGirls,
   },
   {
-    year: '2020',
-    title: 'Hyderabad Launch',
-    description: 'Expanded to our third city despite pandemic challenges, showing resilience.',
-    stat: '3',
-    statLabel: 'Cities across India',
+    year: '2019',
+    title: 'NBA India Partnership',
+    description: 'Ran programs in Mumbai in conjunction with the NBA Games in India.',
+    stat: 'NBA',
+    statLabel: 'Partnership',
     image: images.coachHighFive,
   },
   {
-    year: '2023',
-    title: 'Scholars Program',
-    description: 'Launched full scholarship program supporting students through college.',
-    stat: '85%',
-    statLabel: 'High school retention',
-    image: images.portrait,
+    year: '2022',
+    title: 'Hyderabad Expansion',
+    description: 'Expanded to Hyderabad, our third major city in India.',
+    stat: '3',
+    statLabel: 'Cities across India',
+    image: images.programActivity,
   },
   {
     year: '2024',
     title: '2,500+ Lives Changed',
-    description: 'Reached major milestone with proven impact: 5.3x better outcomes than national average.',
+    description: 'Reached major milestone with proven impact: 5.3x better outcomes than national average. 12 total programs so far.',
     stat: '2,500+',
     statLabel: 'Students impacted',
-    image: images.programActivity,
+    image: images.portrait,
   },
 ];
 
@@ -83,7 +83,7 @@ export default function HorizontalTimeline() {
   const x = useTransform(scrollYProgress, [0, 1], ['0%', `-${(timelineEvents.length - 1) * 100}%`]);
 
   return (
-    <section ref={containerRef} className="relative h-[400vh]">
+    <section ref={containerRef} className="relative h-[250vh]">
       {/* Sticky container */}
       <div className="sticky top-0 h-screen overflow-hidden bg-dark">
         {/* Background gradient */}

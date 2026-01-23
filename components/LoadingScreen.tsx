@@ -63,16 +63,40 @@ export default function LoadingScreen() {
             >
               {/* Basketball */}
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 relative overflow-hidden shadow-2xl">
-                {/* Basketball lines */}
+                {/* Basketball seams - horizontal center line */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-full h-[3px] bg-black/30" />
+                  <div className="w-full h-[3px] bg-black/40" />
                 </div>
+                {/* Vertical center line */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[3px] h-full bg-black/30" />
+                  <div className="w-[3px] h-full bg-black/40" />
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[80%] h-[80%] border-[3px] border-black/30 rounded-full" />
-                </div>
+                {/* Left curved seam */}
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                  <path
+                    d="M 30 10 Q 15 50 30 90"
+                    fill="none"
+                    stroke="rgba(0,0,0,0.4)"
+                    strokeWidth="3"
+                  />
+                </svg>
+                {/* Right curved seam */}
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                  <path
+                    d="M 70 10 Q 85 50 70 90"
+                    fill="none"
+                    stroke="rgba(0,0,0,0.4)"
+                    strokeWidth="3"
+                  />
+                </svg>
+                {/* Pebbled texture effect */}
+                <div
+                  className="absolute inset-0 opacity-20"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.15) 1px, transparent 1px)',
+                    backgroundSize: '6px 6px',
+                  }}
+                />
                 {/* Shine effect */}
                 <motion.div
                   animate={{ x: ['-100%', '200%'] }}

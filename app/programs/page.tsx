@@ -7,6 +7,24 @@ import { images, siteConfig } from '@/lib/utils'
 
 const programs = [
   {
+    title: 'Crossover Scholars Program',
+    subtitle: '2-Week Summer Academy',
+    description: 'Intensive 2-week summer academy with leadership development, college prep, basketball coaching, and local coaches clinics. An immersive experience that brings together our top students and visiting coaches from the US.',
+    image: images.scholars,
+    features: [
+      { icon: Calendar, text: 'Intensive 2-week summer academy' },
+      { icon: Target, text: 'Leadership development workshops' },
+      { icon: BookOpen, text: 'College prep and career guidance' },
+      { icon: Users, text: 'Local coaches clinics and training' },
+    ],
+    outcomes: [
+      'Advanced skill development',
+      'College readiness preparation',
+      'Cross-cultural exchange',
+      'Future coach pipeline',
+    ],
+  },
+  {
     title: 'Crossover Courts to Careers',
     subtitle: 'Year-Round After-School Program',
     description: 'Our flagship program combines rigorous basketball training with mandatory academic support, creating a comprehensive after-school experience that keeps students engaged, motivated, and on track to graduation.',
@@ -22,24 +40,6 @@ const programs = [
       'Improved academic performance',
       'Leadership skill development',
       'Community building',
-    ],
-  },
-  {
-    title: 'Crossover Scholars Program',
-    subtitle: '2-Week Summer Academy',
-    description: 'An intensive summer experience that brings together our top students and visiting coaches from the US for two weeks of advanced training, leadership development, and college preparation.',
-    image: images.scholars,
-    features: [
-      { icon: Calendar, text: 'Intensive 2-week summer academy' },
-      { icon: Target, text: 'Leadership development workshops' },
-      { icon: BookOpen, text: 'College prep and career guidance' },
-      { icon: Users, text: 'Local coaches clinics and training' },
-    ],
-    outcomes: [
-      'Advanced skill development',
-      'College readiness preparation',
-      'Cross-cultural exchange',
-      'Future coach pipeline',
     ],
   },
 ]

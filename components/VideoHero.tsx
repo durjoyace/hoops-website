@@ -8,6 +8,7 @@ interface VideoHeroProps {
   videoSrc?: string;
   fallbackImage?: string;
   overlayOpacity?: number;
+  pinkOverlay?: boolean;
   children?: React.ReactNode;
 }
 
@@ -15,6 +16,7 @@ export default function VideoHero({
   videoSrc = '/videos/hero-bg.mp4',
   fallbackImage = '/images/hero-fallback.jpg',
   overlayOpacity = 0.6,
+  pinkOverlay = false,
   children,
 }: VideoHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -93,6 +95,11 @@ export default function VideoHero({
           style={{ opacity: overlayOpacity }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-dark/60 via-transparent to-dark/60" />
+
+        {/* Pink overlay - similar to hoopscreatinghope.org */}
+        {pinkOverlay && (
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/15 via-pink-400/10 to-transparent mix-blend-multiply pointer-events-none" />
+        )}
 
         {/* Animated grain texture */}
         <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay">

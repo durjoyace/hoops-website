@@ -581,7 +581,7 @@ export default function TeamPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { number: '20+', label: 'Board Members' },
-              { number: '12+', label: 'Years of Service' },
+              { number: '> 100', label: 'Years of Service' },
               { number: '5', label: 'Industry Sectors' },
               { number: '3', label: 'Continents Represented' }
             ].map((stat, index) => (

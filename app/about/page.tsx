@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { ArrowRight, Target, Heart, Users, Award, Lightbulb } from 'lucide-react'
+import JerseyCard from '@/components/JerseyCard'
 import { cn, images, siteConfig } from '@/lib/utils'
 
 // Timeline data
@@ -11,22 +12,17 @@ const timeline = [
   {
     year: '2010',
     title: 'The Idea: Crossover',
-    description: 'Shaun Jayachandran, armed with an M.Ed. in Educational Leadership and 20+ years of elite coaching experience, saw a crisis: talented kids in India were dropping out of school at alarming rates. Traditional education programs weren\'t working. But Shaun had a theory—basketball could provide the structure, encouragement, and hope these students needed. Crossover was born.',
+    description: 'Theory and NGO paperwork and board recruitment. Shaun Jayachandran, armed with an M.Ed. in Educational Leadership and 20+ years of elite coaching experience, saw a crisis: talented kids in India were dropping out of school at alarming rates. Basketball could provide the structure, encouragement, and hope these students needed.',
   },
   {
     year: '2012',
-    title: 'First Program Launches',
-    description: 'Hoops Creating Hope opened its first program in Chennai with 45 students. The model was simple but rigorous: basketball practice combined with mandatory study sessions. Every student had to show up, work hard, and stay in school. No exceptions.',
+    title: 'First Cohort',
+    description: 'First cohort: 45 kids at St. Patrick\'s Anglo-Indian Higher Secondary School. The model was simple but rigorous: basketball practice combined with mandatory study sessions. Every student had to show up, work hard, and stay in school. No exceptions.',
   },
   {
     year: '2013',
     title: 'Rapid Growth & Education Partnership',
     description: '250 students and our first Teach For India classroom. The model was expanding beyond just basketball courts—we were integrating directly into classrooms, proving that sports-based education worked at scale.',
-  },
-  {
-    year: '2014',
-    title: '500 Students, Proven Model',
-    description: '500 kids with a dozen Teach For India classrooms. What started as an experiment was now a movement. Schools wanted to partner with us. Teachers saw the results. Students were staying in school.',
   },
   {
     year: '2015',
@@ -35,13 +31,18 @@ const timeline = [
   },
   {
     year: '2017',
-    title: 'Expanding Impact',
-    description: 'With proven results, HCH expanded to Bangalore. New courts. New students. Same commitment to excellence. Our coaching staff grew to include former college athletes who understood both the game and the stakes.',
+    title: 'Bangalore Expansion',
+    description: 'With proven results, HCH expanded to Bangalore with first programs at Fort School. New courts. New students. Same commitment to excellence.',
   },
   {
-    year: '2020',
-    title: 'Hyderabad & Beyond',
-    description: 'Even through a global pandemic, HCH launched programs in Hyderabad and reached our 1,500th student. We adapted with outdoor practices and remote study sessions. The mission never stopped.',
+    year: '2019',
+    title: 'NBA India Partnership',
+    description: 'Ran programs in Mumbai in conjunction with the NBA Games in India. A major milestone that brought international recognition to our work and expanded our reach.',
+  },
+  {
+    year: '2022',
+    title: 'Hyderabad Launch',
+    description: 'Expanded to Hyderabad, our third major city. Despite pandemic challenges, we adapted with outdoor practices and remote study sessions. The mission never stopped.',
   },
   {
     year: '2024',
@@ -155,7 +156,7 @@ export default function AboutPage() {
           >
             IT STARTED WITH
             <br />
-            A SIMPLE THEORY
+            A THEORY AND A CANDLE
           </motion.h1>
 
           <motion.p
@@ -257,7 +258,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Theory of Change */}
+      {/* Theory of Change - Jersey Style */}
       <section className="section-dark py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
@@ -268,7 +269,7 @@ export default function AboutPage() {
             <p className="text-xl text-white/60">Basketball isn&apos;t the end goal—it&apos;s the vehicle for transformation</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          <div className="flex flex-wrap justify-center gap-8 md:gap-12">
             {theoryOfChange.map((item, index) => (
               <motion.div
                 key={item.title}
@@ -276,12 +277,14 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                className="glass rounded-3xl p-8 text-center card-glow"
               >
-                <div className="font-display text-7xl gradient-text mb-4">{item.number}</div>
-                <h3 className="text-xl font-black text-orange-primary mb-4">{item.title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{item.description}</p>
+                <JerseyCard
+                  number={item.number}
+                  title={item.title}
+                  description={item.description}
+                  color={index % 2 === 0 ? 'orange' : 'purple'}
+                  size="md"
+                />
               </motion.div>
             ))}
           </div>
