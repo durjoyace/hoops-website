@@ -4,21 +4,24 @@ import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
-import { Play, ChevronDown, ArrowRight, Heart, Users, GraduationCap, MapPin, Globe, Trophy } from 'lucide-react';
-import { images, siteConfig } from '@/lib/utils';
+import { Play, ChevronDown, ArrowRight, Heart, Users, GraduationCap, MapPin, Globe, Trophy, X } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { images, videos, siteConfig, tickerStats } from '@/lib/utils';
 import { SplitText, TextReveal, WordReveal } from '@/components/TextReveal';
 import AnimatedCounter, { AnimatedStat } from '@/components/AnimatedCounter';
 import MagneticButton from '@/components/MagneticButton';
 import TiltCard from '@/components/TiltCard';
 import ParticleField, { FloatingBasketballs, GradientOrbs } from '@/components/ParticleField';
 import VideoHero from '@/components/VideoHero';
-import HorizontalTimeline from '@/components/HorizontalTimeline';
-import TestimonialCarousel from '@/components/TestimonialCarousel';
-import FundraisingProgress from '@/components/FundraisingProgress';
 import ImpactSlider, { ImpactComparison } from '@/components/ImpactSlider';
-import IndiaMap from '@/components/IndiaMap';
 import { RevealWrapper, ParallaxImage, ZoomImage } from '@/components/ImageReveal';
 import { PinkOverlayLayer } from '@/components/PinkOverlay';
+
+// Lazy load below-fold heavy components
+const HorizontalTimeline = dynamic(() => import('@/components/HorizontalTimeline'));
+const TestimonialCarousel = dynamic(() => import('@/components/TestimonialCarousel'));
+const FundraisingProgress = dynamic(() => import('@/components/FundraisingProgress'));
+const IndiaMap = dynamic(() => import('@/components/IndiaMap'));
 
 // Stats data
 const stats = [
@@ -86,8 +89,8 @@ export default function HomePage() {
       >
         <div className="h-full flex flex-col items-center justify-center px-6 max-w-6xl mx-auto">
           {/* Particle effects */}
-          <ParticleField count={30} />
-          <FloatingBasketballs count={5} />
+          <ParticleField count={10} />
+          <FloatingBasketballs count={3} />
 
           {/* Badge */}
           <motion.div
@@ -168,8 +171,7 @@ export default function HomePage() {
 
             <MagneticButton
               onClick={() => setVideoOpen(true)}
-              className="glass border-2 border-white/30 text-white font-bold text-lg px-10 py-5 rounded-full flex items-center gap-2 hover:border-orange-primary/50 hover:bg-white/10 min-w-[180px] justify-center backdrop-blur-sm"
-              data-cursor="play"
+              className="glass border border-white/20 text-white font-bold text-lg px-10 py-5 rounded-full flex items-center gap-2 hover:border-orange-primary/50"
             >
               <Play className="w-5 h-5" />
               Watch Our Story
@@ -180,26 +182,18 @@ export default function HomePage() {
 
       {/* STATS TICKER */}
       <section className="py-6 bg-gradient-to-r from-orange-primary via-orange-light to-orange-primary relative overflow-hidden">
-        <motion.div
-          animate={{ x: [0, -1000] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="flex gap-16 whitespace-nowrap"
-        >
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="flex gap-16 items-center">
-              <span className="text-black font-bold text-lg">2,500+ STUDENTS</span>
-              <span className="text-black/50">●</span>
-              <span className="text-black font-bold text-lg">85% RETENTION</span>
-              <span className="text-black/50">●</span>
-              <span className="text-black font-bold text-lg">60% GIRLS</span>
-              <span className="text-black/50">●</span>
-              <span className="text-black font-bold text-lg">3 CITIES</span>
-              <span className="text-black/50">●</span>
-              <span className="text-black font-bold text-lg">14 YEARS</span>
-              <span className="text-black/50">●</span>
+        <div className="animate-marquee flex gap-16 whitespace-nowrap">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="flex gap-16 items-center shrink-0">
+              {tickerStats.map((stat) => (
+                <span key={stat} className="flex items-center gap-16">
+                  <span className="text-black font-bold text-lg">{stat}</span>
+                  <span className="text-black/50">●</span>
+                </span>
+              ))}
             </div>
           ))}
-        </motion.div>
+        </div>
       </section>
 
       {/* IMPACT SLIDER - Before/After Comparison */}
@@ -233,8 +227,8 @@ export default function HomePage() {
       <HorizontalTimeline />
 
       {/* IMPACT STATS with Cards */}
-      <section ref={impactRef} className="py-20 md:py-28 px-6 relative bg-gradient-to-b from-dark-200 to-dark">
-        <FloatingBasketballs count={4} />
+      <section ref={impactRef} className="py-32 px-6 relative bg-gradient-to-b from-dark-200 to-dark">
+        <FloatingBasketballs count={2} />
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-12">
             <TextReveal>
@@ -480,7 +474,7 @@ export default function HomePage() {
       {/* FINAL CTA */}
       <section className="py-32 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-primary via-orange-light to-purple-accent" />
-        <ParticleField count={40} className="opacity-20" />
+        <ParticleField count={8} className="opacity-20" />
 
         <div className="max-w-4xl mx-auto relative z-10 text-center">
           <motion.div
@@ -536,12 +530,14 @@ export default function HomePage() {
             <button
               onClick={() => setVideoOpen(false)}
               className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-orange-primary transition-colors"
+              aria-label="Close video"
             >
-              ✕
+              <X className="w-5 h-5" />
             </button>
             <video
               autoPlay
               controls
+              playsInline
               className="w-full h-full object-contain"
             >
               <source

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -160,8 +161,19 @@ export function Navigation() {
       }
     }
 
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenDropdown(null)
+        setMobileMenuOpen(false)
+      }
+    }
+
     document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
+    }
   }, [openDropdown])
 
   const toggleDropdown = (name: string) => {
@@ -191,10 +203,13 @@ export function Navigation() {
               whileHover={{ scale: 1.05 }}
               transition={{ type: 'spring', stiffness: 400 }}
             >
-              <img
+              <Image
                 src="/images/hoops-creating-hope.png"
                 alt="Hoops Creating Hope"
+                width={160}
+                height={56}
                 className="h-14 w-auto"
+                priority
               />
             </motion.div>
           </Link>

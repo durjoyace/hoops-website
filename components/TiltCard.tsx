@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useRef, ReactNode } from 'react';
+import { useRef, useCallback, ReactNode } from 'react';
 
 interface TiltCardProps {
   children: ReactNode;
@@ -17,6 +17,7 @@ export default function TiltCard({
   tiltAmount = 10,
 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
 
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
@@ -28,34 +29,29 @@ export default function TiltCard({
   const rotateX = useTransform(ySpring, [0, 1], [tiltAmount, -tiltAmount]);
   const rotateY = useTransform(xSpring, [0, 1], [-tiltAmount, tiltAmount]);
 
-  const glareX = useTransform(xSpring, [0, 1], ['-100%', '200%']);
-  const glareOpacity = useTransform(
-    [xSpring, ySpring],
-    ([latestX, latestY]: number[]) => {
-      const distance = Math.sqrt(
-        Math.pow(latestX - 0.5, 2) + Math.pow(latestY - 0.5, 2)
-      );
-      return Math.min(distance * 0.5, 0.15);
+  const handleMouseEnter = useCallback(() => {
+    if (ref.current) {
+      rectRef.current = ref.current.getBoundingClientRect();
     }
-  );
+  }, []);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const xPos = (e.clientX - rect.left) / rect.width;
-    const yPos = (e.clientY - rect.top) / rect.height;
-    x.set(xPos);
-    y.set(yPos);
-  };
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = rectRef.current;
+    if (!rect) return;
+    x.set((e.clientX - rect.left) / rect.width);
+    y.set((e.clientY - rect.top) / rect.height);
+  }, [x, y]);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
+    rectRef.current = null;
     x.set(0.5);
     y.set(0.5);
-  };
+  }, [x, y]);
 
   return (
     <motion.div
       ref={ref}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
@@ -68,15 +64,7 @@ export default function TiltCard({
     >
       {children}
       {glareEnabled && (
-        <motion.div
-          className="absolute inset-0 pointer-events-none rounded-inherit overflow-hidden"
-          style={{ opacity: glareOpacity }}
-        >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/20 to-transparent"
-            style={{ x: glareX }}
-          />
-        </motion.div>
+        <div className="absolute inset-0 pointer-events-none rounded-inherit overflow-hidden opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-br from-white/40 via-white/20 to-transparent" />
       )}
     </motion.div>
   );

@@ -1,0 +1,21 @@
+{
+  "name": "Hoops Creating Hope",
+  "short_name": "HCH",
+  "description": "Empowering underserved youth in India through basketball, education, and mentorship.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF6B35",
+  "icons": [
+    {
+      "src": "/images/hoops-creating-hope.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/hoops-creating-hope.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

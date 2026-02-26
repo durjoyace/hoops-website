@@ -8,6 +8,7 @@ export default function CustomCursor() {
   const [isClicking, setIsClicking] = useState(false);
   const [cursorText, setCursorText] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const [isKeyboardUser, setIsKeyboardUser] = useState(false);
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
@@ -17,7 +18,15 @@ export default function CustomCursor() {
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
+    // Detect keyboard navigation — restore native cursor
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        setIsKeyboardUser(true);
+      }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setIsKeyboardUser(false);
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       setIsVisible(true);
@@ -65,7 +74,8 @@ export default function CustomCursor() {
       setCursorText('');
     };
 
-    window.addEventListener('mousemove', moveCursor);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
 
@@ -88,7 +98,8 @@ export default function CustomCursor() {
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
-      window.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
       observer.disconnect();
@@ -113,7 +124,7 @@ export default function CustomCursor() {
         <motion.div
           animate={{
             scale: isClicking ? 0.8 : isHovering ? 2.5 : 1,
-            opacity: isVisible ? 1 : 0,
+            opacity: isVisible && !isKeyboardUser ? 1 : 0,
           }}
           transition={{ duration: 0.15 }}
           className="relative -translate-x-1/2 -translate-y-1/2"
@@ -148,18 +159,37 @@ export default function CustomCursor() {
         </motion.div>
       </motion.div>
 
-      {/* Hide default cursor */}
+      {/* Hide default cursor only for mouse users on desktop */}
       <style jsx global>{`
-        * {
-          cursor: none !important;
+        @media (pointer: fine) {
+          :root:not(.keyboard-user) * {
+            cursor: none !important;
+          }
+          :root:not(.keyboard-user) *:focus-visible {
+            cursor: auto !important;
+          }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 768px), (pointer: coarse) {
           * {
             cursor: auto !important;
           }
         }
       `}</style>
+
+      {/* Toggle keyboard-user class on html element */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            document.addEventListener('keydown', function(e) {
+              if (e.key === 'Tab') document.documentElement.classList.add('keyboard-user');
+            });
+            document.addEventListener('mousemove', function() {
+              document.documentElement.classList.remove('keyboard-user');
+            });
+          `,
+        }}
+      />
     </>
   );
 }

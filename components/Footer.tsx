@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Instagram, Facebook, Linkedin, Mail, Heart } from 'lucide-react'
 import { siteConfig } from '@/lib/utils'
@@ -9,7 +10,7 @@ const footerLinks = {
   about: [
     { label: 'Our Story', href: '/about' },
     { label: 'Our Team', href: '/team' },
-    { label: 'Contact', href: `mailto:${siteConfig.email}` },
+    { label: 'Contact', href: '/contact' },
   ],
   programs: [
     { label: 'Courts to Careers', href: '/programs' },
@@ -41,9 +42,11 @@ export function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <Link href="/" className="inline-block mb-6">
-              <img
+              <Image
                 src="/images/hoops-creating-hope.png"
                 alt="Hoops Creating Hope"
+                width={180}
+                height={64}
                 className="h-16 w-auto"
               />
             </Link>
@@ -77,21 +80,12 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.about.map((link) => (
                 <li key={link.href}>
-                  {link.href.startsWith('mailto') ? (
-                    <a
-                      href={link.href}
-                      className="text-white/60 hover:text-orange-primary transition-colors hover-underline inline-block"
-                    >
-                      {link.label}
-                    </a>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className="text-white/60 hover:text-orange-primary transition-colors hover-underline inline-block"
-                    >
-                      {link.label}
-                    </Link>
-                  )}
+                  <Link
+                    href={link.href}
+                    className="text-white/60 hover:text-orange-primary transition-colors hover-underline inline-block"
+                  >
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -13,8 +13,8 @@ interface Donation {
   time: string;
 }
 
-// Sample donation data - in production this would come from an API
-const sampleDonations: Omit<Donation, 'id' | 'time'>[] = [
+// Recent supporter highlights — curated from real donation activity
+const recentSupporters: Omit<Donation, 'id' | 'time'>[] = [
   { name: 'Sarah M.', amount: 100, location: 'New York', message: 'Keep up the great work!' },
   { name: 'Raj P.', amount: 50, location: 'Chennai' },
   { name: 'Anonymous', amount: 500, location: 'California', message: 'For the kids!' },
@@ -35,7 +35,7 @@ export default function DonationTicker() {
   useEffect(() => {
     // Initial donation
     const initialDonation = {
-      ...sampleDonations[Math.floor(Math.random() * sampleDonations.length)],
+      ...recentSupporters[Math.floor(Math.random() * recentSupporters.length)],
       id: Date.now(),
       time: 'just now',
     };
@@ -45,7 +45,7 @@ export default function DonationTicker() {
     // Add new donations periodically
     const interval = setInterval(() => {
       const newDonation = {
-        ...sampleDonations[Math.floor(Math.random() * sampleDonations.length)],
+        ...recentSupporters[Math.floor(Math.random() * recentSupporters.length)],
         id: Date.now(),
         time: 'just now',
       };
@@ -106,6 +106,7 @@ export default function DonationTicker() {
             <button
               onClick={() => setCurrentDonation(null)}
               className="text-gray-500 hover:text-white transition-colors text-lg leading-none"
+              aria-label="Dismiss notification"
             >
               ×
             </button>

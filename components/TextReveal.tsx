@@ -52,7 +52,7 @@ export function SplitText({
   className = '',
   charClassName = '',
   delay = 0,
-  stagger = 0.03,
+  stagger = 0.08,
   once = true,
 }: SplitTextProps) {
   const ref = useRef(null);
@@ -62,33 +62,24 @@ export function SplitText({
 
   return (
     <span ref={ref} className={className}>
-      {words.map((word, wordIndex) => (
-        <span key={wordIndex} className="inline-block whitespace-nowrap">
-          {word.split('').map((char, charIndex) => {
-            const totalIndex =
-              words.slice(0, wordIndex).join(' ').length + charIndex + wordIndex;
-            return (
-              <motion.span
-                key={charIndex}
-                initial={{ y: 50, opacity: 0, rotateX: -90 }}
-                animate={
-                  isInView
-                    ? { y: 0, opacity: 1, rotateX: 0 }
-                    : { y: 50, opacity: 0, rotateX: -90 }
-                }
-                transition={{
-                  duration: 0.5,
-                  delay: delay + totalIndex * stagger,
-                  ease: [0.33, 1, 0.68, 1],
-                }}
-                className={`inline-block ${charClassName}`}
-                style={{ transformOrigin: 'bottom' }}
-              >
-                {char}
-              </motion.span>
-            );
-          })}
-          {wordIndex < words.length - 1 && <span>&nbsp;</span>}
+      {words.map((word, index) => (
+        <span key={index} className="inline-block overflow-hidden mr-[0.25em]">
+          <motion.span
+            initial={{ y: '100%', opacity: 0 }}
+            animate={
+              isInView
+                ? { y: 0, opacity: 1 }
+                : { y: '100%', opacity: 0 }
+            }
+            transition={{
+              duration: 0.5,
+              delay: delay + index * stagger,
+              ease: [0.33, 1, 0.68, 1],
+            }}
+            className={`inline-block ${charClassName}`}
+          >
+            {word}
+          </motion.span>
         </span>
       ))}
     </span>

@@ -36,7 +36,17 @@ export const siteConfig = {
     linkedin: 'https://www.linkedin.com/company/hoops-creating-hope/',
   },
   email: 'info@hoopscreatinghope.org',
+  founded: 2010,
 }
+
+// Ticker stats — single source of truth for scrolling headline numbers
+export const tickerStats = [
+  '2,500+ STUDENTS',
+  '85% RETENTION',
+  '60% GIRLS',
+  '3 CITIES',
+  `${new Date().getFullYear() - 2010} YEARS`,
+]
 
 // Navigation links
 export const navLinks = {
@@ -44,14 +54,14 @@ export const navLinks = {
     { label: 'Give Hope Today', href: siteConfig.donateUrl, external: true },
     { label: 'Mentor & Coach & Create', href: '/volunteer' },
     { label: 'Start a Fundraiser', href: '/get-involved#fundraise' },
-    { label: 'Partner With Us', href: '/partnerships' },
+    { label: 'Partner With Us', href: '/get-involved' },
   ],
   aboutUs: [
     { label: 'Our Story', href: '/about' },
     { label: 'Our Team', href: '/team' },
     { label: 'Impact Report', href: '/impact' },
     { label: 'In The News', href: '/news' },
-    { label: 'Contact Us', href: `mailto:${siteConfig.email}` },
+    { label: 'Contact Us', href: '/contact' },
   ],
   whyBasketball: [
     { label: 'How We Work', href: '/programs' },

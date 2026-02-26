@@ -24,26 +24,35 @@ export default function ImpactSlider({
   unit = '%',
 }: ImpactSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
   const isInView = useInView(containerRef, { once: true });
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !containerRef.current) return;
+  const startDrag = () => {
+    if (containerRef.current) {
+      rectRef.current = containerRef.current.getBoundingClientRect();
+    }
+    setIsDragging(true);
+  };
 
-    const rect = containerRef.current.getBoundingClientRect();
+  const stopDrag = () => {
+    rectRef.current = null;
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !rectRef.current) return;
+    const rect = rectRef.current;
     const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
-    const percentage = (x / rect.width) * 100;
-    setSliderPosition(percentage);
+    setSliderPosition((x / rect.width) * 100);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || !containerRef.current) return;
-
-    const rect = containerRef.current.getBoundingClientRect();
+    if (!isDragging || !rectRef.current) return;
+    const rect = rectRef.current;
     const x = Math.max(0, Math.min(e.touches[0].clientX - rect.left, rect.width));
-    const percentage = (x / rect.width) * 100;
-    setSliderPosition(percentage);
+    setSliderPosition((x / rect.width) * 100);
   };
 
   return (
@@ -66,12 +75,12 @@ export default function ImpactSlider({
         transition={{ delay: 0.2 }}
         className="relative h-80 rounded-3xl overflow-hidden cursor-ew-resize select-none"
         onMouseMove={handleMouseMove}
-        onMouseDown={() => setIsDragging(true)}
-        onMouseUp={() => setIsDragging(false)}
-        onMouseLeave={() => setIsDragging(false)}
+        onMouseDown={startDrag}
+        onMouseUp={stopDrag}
+        onMouseLeave={stopDrag}
         onTouchMove={handleTouchMove}
-        onTouchStart={() => setIsDragging(true)}
-        onTouchEnd={() => setIsDragging(false)}
+        onTouchStart={startDrag}
+        onTouchEnd={stopDrag}
         data-cursor="drag"
       >
         {/* Before side (full width background) */}

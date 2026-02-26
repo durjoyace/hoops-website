@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
 import { useRef, useState, useEffect } from 'react';
 import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
 
@@ -24,6 +25,7 @@ export default function VideoHero({
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [hasVideoError, setHasVideoError] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -68,26 +70,36 @@ export default function VideoHero({
       <motion.div style={{ y, scale }} className="absolute inset-0">
         {/* Fallback image (shows while video loads or if video fails) */}
         <div
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
+          className={`absolute inset-0 transition-opacity duration-1000 ${
             isVideoLoaded ? 'opacity-0' : 'opacity-100'
           }`}
-          style={{ backgroundImage: `url(${fallbackImage})` }}
-        />
+        >
+          <Image
+            src={fallbackImage}
+            alt=""
+            fill
+            priority
+            className="object-cover"
+          />
+        </div>
 
         {/* Video */}
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          onLoadedData={() => setIsVideoLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            isVideoLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
+        {!hasVideoError && (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            onLoadedData={() => setIsVideoLoaded(true)}
+            onError={() => setHasVideoError(true)}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              isVideoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
+        )}
 
         {/* Gradient overlays */}
         <div
@@ -101,10 +113,8 @@ export default function VideoHero({
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/15 via-pink-400/10 to-transparent mix-blend-multiply pointer-events-none" />
         )}
 
-        {/* Animated grain texture */}
-        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay">
-          <div className="absolute inset-0 bg-noise animate-grain" />
-        </div>
+        {/* Subtle grain texture (static, no animation) */}
+        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-noise" />
       </motion.div>
 
       {/* Content */}
@@ -113,7 +123,7 @@ export default function VideoHero({
       </motion.div>
 
       {/* Video controls */}
-      <div className="absolute bottom-8 right-8 z-20 flex gap-3">
+      <div className={`absolute bottom-8 right-8 z-20 flex gap-3 ${hasVideoError ? 'hidden' : ''}`}>
         <motion.button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
