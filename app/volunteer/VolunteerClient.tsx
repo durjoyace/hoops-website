@@ -1,9 +1,11 @@
 'use client'
 
+import { useState, FormEvent } from 'react'
 import { motion } from 'framer-motion'
-import { Heart, Users, GraduationCap, Camera, Briefcase, Globe, Mail, Calendar, MapPin } from 'lucide-react'
+import { Heart, Users, GraduationCap, Camera, Briefcase, Globe, Mail, Calendar, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { images, siteConfig } from '@/lib/utils'
+import { formConfig, getFormspreeUrl } from '@/lib/form-config'
 
 const volunteerRoles = [
   {
@@ -60,6 +62,186 @@ const summerProgram = {
     'Experience Indian culture and community',
     'Make lifelong connections with students and volunteers',
   ],
+}
+
+type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
+
+function VolunteerForm() {
+  const [status, setStatus] = useState<FormStatus>('idle')
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    role: '',
+    availability: '',
+    message: '',
+  })
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+
+    if (formConfig.volunteerFormId) {
+      setStatus('submitting')
+      try {
+        const res = await fetch(getFormspreeUrl(formConfig.volunteerFormId), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        })
+        if (res.ok) {
+          setStatus('success')
+          setFormData({ name: '', email: '', role: '', availability: '', message: '' })
+        } else {
+          setStatus('error')
+        }
+      } catch {
+        setStatus('error')
+      }
+    } else {
+      const subject = encodeURIComponent('Volunteer Application')
+      const body = encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\nRole Interest: ${formData.role}\nAvailability: ${formData.availability}\n\n${formData.message}`
+      )
+      window.location.href = `mailto:${siteConfig.email}?subject=${subject}&body=${body}`
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="text-center py-8">
+        <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-6" />
+        <h3 className="text-2xl font-bold mb-3">Application Received!</h3>
+        <p className="text-white/60 mb-6">We&apos;ll review your application and get back to you soon.</p>
+        <button
+          onClick={() => setStatus('idle')}
+          className="px-6 py-3 bg-orange-primary hover:bg-orange-hover text-white font-bold rounded-xl transition-colors"
+        >
+          Submit Another Application
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="vol-name" className="block text-sm font-bold text-white/80 mb-2">
+            Full Name *
+          </label>
+          <input
+            id="vol-name"
+            type="text"
+            required
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary outline-none transition-colors"
+            placeholder="Your full name"
+          />
+        </div>
+        <div>
+          <label htmlFor="vol-email" className="block text-sm font-bold text-white/80 mb-2">
+            Email *
+          </label>
+          <input
+            id="vol-email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary outline-none transition-colors"
+            placeholder="you@example.com"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="vol-role" className="block text-sm font-bold text-white/80 mb-2">
+            Role Interest *
+          </label>
+          <select
+            id="vol-role"
+            required
+            value={formData.role}
+            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-orange-primary focus:ring-1 focus:ring-orange-primary outline-none transition-colors"
+          >
+            <option value="" className="bg-black">Select a role...</option>
+            <option value="Coach" className="bg-black">Coach</option>
+            <option value="Academic Mentor" className="bg-black">Academic Mentor</option>
+            <option value="Content Creator" className="bg-black">Content Creator</option>
+            <option value="Skills Volunteer" className="bg-black">Skills Volunteer</option>
+            <option value="Ambassador" className="bg-black">Ambassador</option>
+            <option value="Event Support" className="bg-black">Event Support</option>
+            <option value="Other" className="bg-black">Other</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="vol-availability" className="block text-sm font-bold text-white/80 mb-2">
+            Availability
+          </label>
+          <select
+            id="vol-availability"
+            value={formData.availability}
+            onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-orange-primary focus:ring-1 focus:ring-orange-primary outline-none transition-colors"
+          >
+            <option value="" className="bg-black">Select availability...</option>
+            <option value="1-2 hours/week" className="bg-black">1-2 hours/week</option>
+            <option value="2-4 hours/week" className="bg-black">2-4 hours/week</option>
+            <option value="4-8 hours/week" className="bg-black">4-8 hours/week</option>
+            <option value="Project-based" className="bg-black">Project-based</option>
+            <option value="Flexible" className="bg-black">Flexible</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="vol-message" className="block text-sm font-bold text-white/80 mb-2">
+          Tell Us About Yourself
+        </label>
+        <textarea
+          id="vol-message"
+          rows={4}
+          value={formData.message}
+          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary outline-none transition-colors resize-none"
+          placeholder="Share your background, skills, and why you'd like to volunteer..."
+        />
+      </div>
+
+      {status === 'error' && (
+        <div className="flex items-center gap-2 text-red-400 text-sm">
+          <AlertCircle className="w-4 h-4" />
+          Something went wrong. Please try again or email us directly.
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={status === 'submitting'}
+        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-10 py-4 bg-orange-primary hover:bg-orange-hover disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-lg rounded-2xl transition-colors"
+      >
+        {status === 'submitting' ? (
+          <>
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            Submitting...
+          </>
+        ) : (
+          <>
+            <Send className="w-5 h-5" />
+            Apply to Volunteer
+          </>
+        )}
+      </button>
+
+      {!formConfig.volunteerFormId && (
+        <p className="text-white/40 text-sm">
+          This will open your email client with a pre-filled application.
+        </p>
+      )}
+    </form>
+  )
 }
 
 export default function VolunteerClient() {
@@ -211,16 +393,18 @@ export default function VolunteerClient() {
         </div>
       </section>
 
-      {/* Application Form CTA */}
+      {/* Volunteer Application Form */}
       <section className="bg-black py-24">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="section-title mb-6">Ready to Get Started?</h2>
-          <p className="text-xl text-white/60 mb-10 max-w-2xl mx-auto">
-            Tell us about yourself and how you&apos;d like to contribute. We&apos;ll match you with opportunities that fit your skills and availability.
-          </p>
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="section-title mb-6">Ready to Get Started?</h2>
+            <p className="text-xl text-white/60 max-w-2xl mx-auto">
+              Tell us about yourself and how you&apos;d like to contribute. We&apos;ll match you with opportunities that fit your skills and availability.
+            </p>
+          </div>
 
           <div className="glass rounded-3xl p-8 md:p-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mb-10">
               <div>
                 <h3 className="font-bold text-lg mb-4">What We Look For:</h3>
                 <ul className="space-y-2 text-white/60">
@@ -241,13 +425,7 @@ export default function VolunteerClient() {
               </div>
             </div>
 
-            <a
-              href={`mailto:${siteConfig.email}?subject=Volunteer%20Application`}
-              className="inline-flex items-center gap-3 px-10 py-5 bg-orange-primary hover:bg-orange-hover text-white font-bold text-lg rounded-2xl transition-colors"
-            >
-              <Mail className="w-6 h-6" />
-              Apply to Volunteer
-            </a>
+            <VolunteerForm />
           </div>
         </div>
       </section>

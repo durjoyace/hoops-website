@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Play, Quote, ArrowRight, Heart } from 'lucide-react'
 import { images, siteConfig } from '@/lib/utils'
@@ -208,6 +209,25 @@ export default function StoriesClient() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* More Stories CTA */}
+      <section className="section-dark py-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-4">
+            More Stories &amp; Updates
+          </h2>
+          <p className="text-lg text-white/60 mb-8">
+            Read more about our impact, events, and student achievements in our news section.
+          </p>
+          <Link
+            href="/news"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl transition-colors border border-white/20"
+          >
+            Visit News &amp; Updates
+            <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
       </section>
 

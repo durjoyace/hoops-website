@@ -1,10 +1,12 @@
 'use client'
 
+import { useState, FormEvent } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Instagram, Facebook, Linkedin, Mail, Heart } from 'lucide-react'
+import { Instagram, Facebook, Linkedin, Mail, Heart, Send, CheckCircle } from 'lucide-react'
 import { siteConfig } from '@/lib/utils'
+import { formConfig, getFormspreeUrl } from '@/lib/form-config'
 
 const footerLinks = {
   about: [
@@ -31,6 +33,69 @@ const socialLinks = [
   { icon: Mail, href: `mailto:${siteConfig.email}`, label: 'Email' },
 ]
 
+function NewsletterSignup() {
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    if (formConfig.newsletterFormId) {
+      setStatus('submitting')
+      try {
+        const res = await fetch(getFormspreeUrl(formConfig.newsletterFormId), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        })
+        if (res.ok) {
+          setStatus('success')
+          setEmail('')
+        } else {
+          setStatus('error')
+        }
+      } catch {
+        setStatus('error')
+      }
+    } else {
+      // Fallback: open mailto
+      window.location.href = `mailto:${siteConfig.email}?subject=Newsletter%20Signup&body=Please%20add%20me%20to%20your%20newsletter:%20${encodeURIComponent(email)}`
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="flex items-center gap-2 text-green-400 text-sm">
+        <CheckCircle className="w-4 h-4" />
+        Thanks for subscribing!
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex gap-2">
+      <input
+        type="email"
+        required
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Your email"
+        className="flex-1 min-w-0 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder-white/30 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary outline-none transition-colors"
+      />
+      <button
+        type="submit"
+        disabled={status === 'submitting'}
+        className="px-4 py-2.5 bg-orange-primary hover:bg-orange-hover disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-colors flex-shrink-0"
+      >
+        {status === 'submitting' ? (
+          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        ) : (
+          <Send className="w-4 h-4" />
+        )}
+      </button>
+    </form>
+  )
+}
+
 export function Footer() {
   return (
     <footer className="relative bg-black border-t border-white/10">
@@ -38,9 +103,9 @@ export function Footer() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-primary to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand Section */}
-          <div className="lg:col-span-2">
+          <div className="col-span-2 lg:col-span-2">
             <Link href="/" className="inline-block mb-6">
               <Image
                 src="/images/hoops-creating-hope.png"
@@ -56,7 +121,7 @@ export function Footer() {
             </p>
 
             {/* Social Links */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mb-8">
               {socialLinks.map((social) => (
                 <motion.a
                   key={social.label}
@@ -72,6 +137,12 @@ export function Footer() {
                 </motion.a>
               ))}
             </div>
+
+            {/* Newsletter Signup */}
+            <div>
+              <h4 className="text-white font-bold mb-3 text-sm">Stay Updated</h4>
+              <NewsletterSignup />
+            </div>
           </div>
 
           {/* About Links */}
@@ -79,7 +150,7 @@ export function Footer() {
             <h4 className="text-white font-bold mb-5 text-lg">About</h4>
             <ul className="space-y-3">
               {footerLinks.about.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-white/60 hover:text-orange-primary transition-colors hover-underline inline-block"
@@ -128,10 +199,18 @@ export function Footer() {
 
         {/* Bottom Section */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-white/40 text-sm flex items-center gap-1">
-            &copy; {new Date().getFullYear()} Hoops Creating Hope. Made with{' '}
-            <Heart className="w-4 h-4 text-red-500 fill-red-500" /> in the US & India
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-4 text-sm">
+            <p className="text-white/40 flex items-center gap-1">
+              &copy; {new Date().getFullYear()} Hoops Creating Hope. Made with{' '}
+              <Heart className="w-4 h-4 text-red-500 fill-red-500" /> in the US & India
+            </p>
+            <Link
+              href="/privacy"
+              className="text-white/40 hover:text-white/60 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+          </div>
 
           <motion.a
             href={siteConfig.donateUrl}

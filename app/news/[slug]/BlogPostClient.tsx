@@ -1,9 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Calendar, Clock, ArrowLeft, ArrowRight, Heart, User, Tag } from 'lucide-react'
+import { Calendar, Clock, ArrowLeft, ArrowRight, Heart, User, Tag, Share2, Link2, CheckCircle } from 'lucide-react'
 import { cn, siteConfig } from '@/lib/utils'
 import { type BlogPost, getRelatedPosts } from '@/lib/data/blog-posts'
 
@@ -32,9 +33,96 @@ function CategoryBadge({ category }: { category: BlogPost['category'] }) {
   )
 }
 
+function ShareButtons({ title, url }: { title: string; url: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleNativeShare = async () => {
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share({ title, url })
+      } catch {
+        // User cancelled or share failed
+      }
+    }
+  }
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Fallback
+    }
+  }
+
+  const encodedTitle = encodeURIComponent(title)
+  const encodedUrl = encodeURIComponent(url)
+
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <span className="text-white/50 text-sm font-bold">Share:</span>
+
+      {typeof navigator !== 'undefined' && 'share' in navigator && (
+        <button
+          onClick={handleNativeShare}
+          className="p-2 rounded-lg bg-white/5 hover:bg-orange-primary/20 border border-white/10 hover:border-orange-primary/50 transition-all"
+          aria-label="Share"
+        >
+          <Share2 className="w-4 h-4 text-white/60 hover:text-orange-primary" />
+        </button>
+      )}
+
+      <a
+        href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-orange-primary/20 border border-white/10 hover:border-orange-primary/50 text-white/60 hover:text-orange-primary text-sm font-bold transition-all"
+      >
+        X
+      </a>
+      <a
+        href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-orange-primary/20 border border-white/10 hover:border-orange-primary/50 text-white/60 hover:text-orange-primary text-sm font-bold transition-all"
+      >
+        Facebook
+      </a>
+      <a
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-orange-primary/20 border border-white/10 hover:border-orange-primary/50 text-white/60 hover:text-orange-primary text-sm font-bold transition-all"
+      >
+        LinkedIn
+      </a>
+      <button
+        onClick={handleCopyLink}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-orange-primary/20 border border-white/10 hover:border-orange-primary/50 text-white/60 hover:text-orange-primary text-sm font-bold transition-all"
+      >
+        {copied ? (
+          <>
+            <CheckCircle className="w-4 h-4 text-green-400" />
+            Copied!
+          </>
+        ) : (
+          <>
+            <Link2 className="w-4 h-4" />
+            Copy Link
+          </>
+        )}
+      </button>
+    </div>
+  )
+}
+
 export default function BlogPostClient({ post }: { post: BlogPost }) {
   const relatedPosts = getRelatedPosts(post.slug, 3)
   const paragraphs = post.content.split('\n\n')
+  const currentUrl = typeof window !== 'undefined'
+    ? window.location.href
+    : `https://hoopscreatinghope.org/news/${post.slug}`
 
   return (
     <>
@@ -135,6 +223,11 @@ export default function BlogPostClient({ post }: { post: BlogPost }) {
               </motion.p>
             ))}
           </motion.div>
+
+          {/* Share Buttons */}
+          <div className="mt-12 pt-8 border-t border-white/10">
+            <ShareButtons title={post.title} url={currentUrl} />
+          </div>
 
           {/* Divider */}
           <div className="my-16 h-px bg-gradient-to-r from-transparent via-orange-primary/30 to-transparent" />

@@ -411,7 +411,7 @@ export default function TeamClient() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto font-medium"
+            className="text-xl md:text-2xl text-white/95 max-w-2xl mx-auto font-medium"
           >
             Guided by leaders who believe every child deserves a shot at changing their future
           </motion.p>

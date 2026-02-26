@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { siteConfig, navLinks } from '@/lib/utils'
 
@@ -13,9 +14,10 @@ interface NavDropdownProps {
   links: { label: string; href: string; external?: boolean }[]
   isOpen: boolean
   onToggle: () => void
+  pathname: string
 }
 
-function NavDropdown({ label, links, isOpen, onToggle }: NavDropdownProps) {
+function NavDropdown({ label, links, isOpen, onToggle, pathname }: NavDropdownProps) {
   return (
     <div className="relative">
       <button
@@ -55,7 +57,12 @@ function NavDropdown({ label, links, isOpen, onToggle }: NavDropdownProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block px-5 py-3 text-white/80 hover:text-orange-primary hover:bg-orange-primary/10 transition-all border-l-2 border-transparent hover:border-orange-primary"
+                  className={cn(
+                    "block px-5 py-3 hover:text-orange-primary hover:bg-orange-primary/10 transition-all border-l-2 hover:border-orange-primary",
+                    isLinkActive(link.href, pathname)
+                      ? "text-orange-primary border-orange-primary bg-orange-primary/5"
+                      : "text-white/80 border-transparent"
+                  )}
                 >
                   {link.label}
                 </Link>
@@ -74,9 +81,10 @@ interface MobileNavSectionProps {
   isOpen: boolean
   onToggle: () => void
   onLinkClick: () => void
+  pathname: string
 }
 
-function MobileNavSection({ label, links, isOpen, onToggle, onLinkClick }: MobileNavSectionProps) {
+function MobileNavSection({ label, links, isOpen, onToggle, onLinkClick, pathname }: MobileNavSectionProps) {
   return (
     <div className="border-b border-white/10">
       <button
@@ -118,7 +126,12 @@ function MobileNavSection({ label, links, isOpen, onToggle, onLinkClick }: Mobil
                   key={link.href}
                   href={link.href}
                   onClick={onLinkClick}
-                  className="block py-3 pl-5 text-white/70 hover:text-orange-primary transition-colors border-l-2 border-transparent hover:border-orange-primary"
+                  className={cn(
+                    "block py-3 pl-5 hover:text-orange-primary transition-colors border-l-2 hover:border-orange-primary",
+                    isLinkActive(link.href, pathname)
+                      ? "text-orange-primary border-orange-primary"
+                      : "text-white/70 border-transparent"
+                  )}
                 >
                   {link.label}
                 </Link>
@@ -131,7 +144,14 @@ function MobileNavSection({ label, links, isOpen, onToggle, onLinkClick }: Mobil
   )
 }
 
+function isLinkActive(href: string, pathname: string) {
+  if (href === '/') return pathname === '/'
+  if (href.startsWith('mailto:') || href.startsWith('http')) return false
+  return pathname.startsWith(href)
+}
+
 export function Navigation() {
+  const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -221,23 +241,37 @@ export function Navigation() {
               links={navLinks.takeAction}
               isOpen={openDropdown === 'takeAction'}
               onToggle={() => toggleDropdown('takeAction')}
+              pathname={pathname}
             />
             <NavDropdown
               label="About Us"
               links={navLinks.aboutUs}
               isOpen={openDropdown === 'aboutUs'}
               onToggle={() => toggleDropdown('aboutUs')}
+              pathname={pathname}
             />
             <NavDropdown
               label="Why Basketball"
               links={navLinks.whyBasketball}
               isOpen={openDropdown === 'whyBasketball'}
               onToggle={() => toggleDropdown('whyBasketball')}
+              pathname={pathname}
             />
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Mobile Donate Button (compact, always visible) */}
+            <a
+              href={siteConfig.donateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="md:hidden inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm rounded-full transition-colors"
+            >
+              <Heart className="w-4 h-4" />
+              Donate
+            </a>
+
             {/* Desktop Donate Button */}
             <motion.a
               href={siteConfig.donateUrl}
@@ -254,7 +288,8 @@ export function Navigation() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 text-white focus-ring rounded-lg"
-              aria-label="Toggle menu"
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
                 <X className="w-7 h-7" />
@@ -295,6 +330,7 @@ export function Navigation() {
                   isOpen={mobileSection === 'takeAction'}
                   onToggle={() => setMobileSection(mobileSection === 'takeAction' ? null : 'takeAction')}
                   onLinkClick={closeMobileMenu}
+                  pathname={pathname}
                 />
                 <MobileNavSection
                   label="About Us"
@@ -302,6 +338,7 @@ export function Navigation() {
                   isOpen={mobileSection === 'aboutUs'}
                   onToggle={() => setMobileSection(mobileSection === 'aboutUs' ? null : 'aboutUs')}
                   onLinkClick={closeMobileMenu}
+                  pathname={pathname}
                 />
                 <MobileNavSection
                   label="Why Basketball"
@@ -309,6 +346,7 @@ export function Navigation() {
                   isOpen={mobileSection === 'whyBasketball'}
                   onToggle={() => setMobileSection(mobileSection === 'whyBasketball' ? null : 'whyBasketball')}
                   onLinkClick={closeMobileMenu}
+                  pathname={pathname}
                 />
 
                 {/* Mobile Donate Button */}

@@ -132,7 +132,7 @@ export default function HomePage() {
             <span className="block mt-2">
               <SplitText
                 text="THE FUTURE"
-                className="text-white/90"
+                className="text-white/95"
                 charClassName="inline-block"
                 delay={0.6}
                 stagger={0.03}
@@ -145,7 +145,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-12 font-medium text-center"
+            className="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto mb-12 font-medium text-center"
           >
             Basketball Isn&apos;t Just a Game — It&apos;s a Pathway to Opportunity in India.
             <br className="hidden sm:block" />

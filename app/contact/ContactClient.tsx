@@ -16,6 +16,7 @@ import {
   Heart,
 } from 'lucide-react'
 import { siteConfig } from '@/lib/utils'
+import { formConfig, getFormspreeUrl } from '@/lib/form-config'
 
 // FAQ data
 const faqs = [
@@ -144,19 +145,35 @@ export default function ContactClient() {
     return Object.keys(newErrors).length === 0
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
     if (!validate()) return
 
-    const subject = encodeURIComponent(`[${formData.subject}] Message from ${formData.name}`)
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nSubject: ${formData.subject}\n\n${formData.message}`
-    )
+    if (formConfig.contactFormId) {
+      try {
+        const res = await fetch(getFormspreeUrl(formConfig.contactFormId), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        })
+        if (res.ok) {
+          setSubmitted(true)
+          setFormData({ name: '', email: '', subject: '', message: '' })
+        }
+      } catch {
+        // Fall through to mailto
+      }
+    } else {
+      const subject = encodeURIComponent(`[${formData.subject}] Message from ${formData.name}`)
+      const body = encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\nSubject: ${formData.subject}\n\n${formData.message}`
+      )
 
-    window.location.href = `mailto:${siteConfig.email}?subject=${subject}&body=${body}`
+      window.location.href = `mailto:${siteConfig.email}?subject=${subject}&body=${body}`
 
-    setSubmitted(true)
+      setSubmitted(true)
+    }
   }
 
   function handleChange(
