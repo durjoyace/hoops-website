@@ -116,8 +116,8 @@ export default function HomePage() {
             <span className="block mt-2">
               <SplitText
                 text="DRIBBLE"
-                className="gradient-text"
-                charClassName="inline-block"
+                className=""
+                charClassName="inline-block gradient-text"
                 delay={0.2}
                 stagger={0.03}
               />
