@@ -1,38 +1,26 @@
 import { MetadataRoute } from 'next'
-import { newsArticles } from '@/lib/news-data'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://hoopscreatinghope.org'
+  const baseUrl = 'https://globalgtmos.com'
 
   const routes = [
     '',
-    '/about',
-    '/team',
-    '/programs',
-    '/impact',
-    '/stories',
-    '/volunteer',
-    '/fundraise',
-    '/partnerships',
-    '/news',
-    '/get-involved',
-    '/contact',
-    '/privacy',
+    '/onboarding',
+    '/dashboard',
+    '/dashboard/leads',
+    '/dashboard/enrichment',
+    '/dashboard/scoring',
+    '/dashboard/workflows',
+    '/dashboard/outreach',
+    '/dashboard/pipeline',
+    '/dashboard/templates',
+    '/dashboard/intelligence',
   ]
 
-  const staticPages = routes.map((route) => ({
+  return routes.map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: (route === '' ? 'weekly' : 'monthly') as 'weekly' | 'monthly',
-    priority: route === '' ? 1 : route === '/about' || route === '/programs' ? 0.9 : 0.8,
+    priority: route === '' ? 1 : 0.8,
   }))
-
-  const newsPages = newsArticles.map((article) => ({
-    url: `${baseUrl}/news/${article.id}`,
-    lastModified: new Date(article.date),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }))
-
-  return [...staticPages, ...newsPages]
 }

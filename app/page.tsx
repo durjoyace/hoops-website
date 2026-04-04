@@ -1,554 +1,600 @@
-'use client';
+"use client";
 
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRef, useState } from 'react';
-import { Play, ChevronDown, ArrowRight, Heart, Users, GraduationCap, MapPin, Globe, Trophy, X } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import { images, videos, siteConfig, tickerStats } from '@/lib/utils';
-import { SplitText, TextReveal, WordReveal } from '@/components/TextReveal';
-import AnimatedCounter, { AnimatedStat } from '@/components/AnimatedCounter';
-import MagneticButton from '@/components/MagneticButton';
-import TiltCard from '@/components/TiltCard';
-import ParticleField, { FloatingBasketballs, GradientOrbs } from '@/components/ParticleField';
-import VideoHero from '@/components/VideoHero';
-import ImpactSlider, { ImpactComparison } from '@/components/ImpactSlider';
-import { RevealWrapper, ParallaxImage, ZoomImage } from '@/components/ImageReveal';
-import { PinkOverlayLayer } from '@/components/PinkOverlay';
+import MarketingNav from "@/components/MarketingNav";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Globe,
+  Search,
+  Sparkles,
+  BarChart3,
+  Workflow,
+  Mail,
+  MapPin,
+  ArrowRight,
+  CheckCircle2,
+  Users,
+  Target,
+  Zap,
+  Layers,
+  ChevronRight,
+  Star,
+} from "lucide-react";
 
-// Lazy load below-fold heavy components
-const HorizontalTimeline = dynamic(() => import('@/components/HorizontalTimeline'));
-const TestimonialCarousel = dynamic(() => import('@/components/TestimonialCarousel'));
-const FundraisingProgress = dynamic(() => import('@/components/FundraisingProgress'));
-const IndiaMap = dynamic(() => import('@/components/IndiaMap'));
+/* ───────── animation variants ───────── */
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
 
-// Stats data
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+/* ───────── data ───────── */
 const stats = [
-  { value: 2500, suffix: '+', label: 'Students Impacted', icon: Users },
-  { value: 85, suffix: '%', label: 'High School Retention', icon: GraduationCap },
-  { value: 60, suffix: '%', label: 'Girls Participation', icon: Trophy },
-  { value: 3, suffix: '', label: 'Cities in India', icon: Globe },
+  { value: "12,000+", label: "Leads" },
+  { value: "34%", label: "Reply Rate" },
+  { value: "89", label: "Countries" },
+  { value: "$4.2M", label: "Pipeline" },
 ];
 
-// Programs data
-const programs = [
+const features = [
   {
-    title: 'Courts to Careers',
-    description: 'Basketball as the hook. Education as the goal. Life skills that last forever.',
-    icon: GraduationCap,
-    color: 'from-orange-primary to-orange-light',
-    image: images.coachHighFive,
-    link: '/programs',
+    icon: Search,
+    title: "Lead Sourcing",
+    description:
+      "Discover high-intent U.S. buyers from curated databases of importers, distributors, and procurement teams.",
   },
   {
-    title: 'Crossover Scholars Program',
-    description: 'Intensive 2-week summer academy with leadership development, college prep, basketball coaching, and local coaches clinics.',
-    icon: Users,
-    color: 'from-purple-accent to-orange-primary',
-    image: images.portrait,
-    link: '/programs',
+    icon: Sparkles,
+    title: "Smart Enrichment",
+    description:
+      "Auto-enrich every lead with firmographics, technographics, and buying signals so you never send a blind email.",
   },
   {
-    title: 'Community Courts',
-    description: 'Building safe spaces where dreams take flight in Chennai, Bangalore & Hyderabad.',
+    icon: BarChart3,
+    title: "Lead Scoring",
+    description:
+      "AI-powered scoring ranks prospects by fit, intent, and timing so your team focuses on the deals that close.",
+  },
+  {
+    icon: Workflow,
+    title: "GTM Workflows",
+    description:
+      "Pre-built playbooks for every stage — from first touch to signed contract — tailored to cross-border selling.",
+  },
+  {
+    icon: Mail,
+    title: "AI Outreach",
+    description:
+      "Generate personalized, multi-channel sequences that respect U.S. business norms and time zones automatically.",
+  },
+  {
     icon: MapPin,
-    color: 'from-orange-light to-purple-accent',
-    image: images.outdoorCourt,
-    link: '/fundraise',
+    title: "Country Intelligence",
+    description:
+      "Tariff data, compliance checklists, and cultural briefings for every country-to-U.S. trade corridor.",
   },
 ];
 
-// Additional impact stats for underserved demographics
-const additionalStats = [
+const steps = [
   {
-    stat: '1-5%',
-    label: 'Girls in sports programs for families under $5/day',
-    description: 'We\'re changing this: 60% of our participants are girls',
+    icon: Target,
+    title: "Select Profile",
+    description:
+      "Choose your industry, product category, and target buyer persona to configure your GTM engine.",
   },
   {
-    stat: '5-12%',
-    label: 'College attendance for boys & girls in families under $5/day',
-    description: 'Our students beat the odds with 85% high school completion',
+    icon: Layers,
+    title: "Pick Template",
+    description:
+      "Browse proven outreach templates organized by channel, industry, and market entry strategy.",
+  },
+  {
+    icon: Zap,
+    title: "Run GTM",
+    description:
+      "Launch automated workflows that source leads, enrich data, score prospects, and send outreach.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Review & Launch",
+    description:
+      "Review AI-generated campaigns, approve messaging, and go live with a single click.",
   },
 ];
 
+const templates = [
+  { category: "Manufacturing", channel: "Email", name: "Industrial Distributor Outreach", users: 2340, replyRate: "32%" },
+  { category: "SaaS", channel: "LinkedIn", name: "U.S. Channel Partner Intro", users: 1870, replyRate: "28%" },
+  { category: "Food & Bev", channel: "Email", name: "Retail Buyer Cold Sequence", users: 1540, replyRate: "36%" },
+  { category: "Automotive", channel: "Multi", name: "OEM Supplier Pitch", users: 980, replyRate: "31%" },
+  { category: "Pharma", channel: "Email", name: "FDA-Ready Market Entry", users: 760, replyRate: "29%" },
+  { category: "Textiles", channel: "LinkedIn", name: "Private Label Partnership", users: 1120, replyRate: "34%" },
+];
+
+const pricingTiers = [
+  {
+    name: "Starter",
+    price: "$49",
+    period: "/mo",
+    description: "For solo founders testing the U.S. market.",
+    popular: false,
+    features: [
+      "500 leads / month",
+      "Basic enrichment",
+      "3 outreach templates",
+      "Email sequences",
+      "Community support",
+    ],
+    cta: "Start Selling",
+  },
+  {
+    name: "Pro",
+    price: "$149",
+    period: "/mo",
+    description: "For growing teams running active GTM campaigns.",
+    popular: true,
+    features: [
+      "5,000 leads / month",
+      "Full enrichment + scoring",
+      "Unlimited templates",
+      "Multi-channel outreach",
+      "Country intelligence",
+      "Priority support",
+    ],
+    cta: "Start Selling",
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    period: "",
+    description: "For large manufacturers with complex trade corridors.",
+    popular: false,
+    features: [
+      "Unlimited leads",
+      "Custom enrichment sources",
+      "Dedicated CSM",
+      "SSO & SAML",
+      "API access",
+      "SLA guarantee",
+    ],
+    cta: "Contact Sales",
+  },
+];
+
+/* ───────── mock dashboard data ───────── */
+const dashboardStats = [
+  { label: "Active Leads", value: "2,847" },
+  { label: "Emails Sent", value: "12,493" },
+  { label: "Reply Rate", value: "34.2%" },
+  { label: "Pipeline", value: "$1.2M" },
+];
+
+const dashboardRows = [
+  { company: "Apex Industrial LLC", location: "Houston, TX", score: 94, status: "Hot" },
+  { company: "NorthStar Distributing", location: "Chicago, IL", score: 87, status: "Warm" },
+  { company: "Pacific Rim Imports", location: "Los Angeles, CA", score: 82, status: "Warm" },
+];
+
+/* ───────── page ───────── */
 export default function HomePage() {
-  const [videoOpen, setVideoOpen] = useState(false);
-  const impactRef = useRef(null);
-  const impactInView = useInView(impactRef, { once: true });
-
   return (
-    <main className="bg-black overflow-x-hidden">
-      {/* HERO SECTION with Video Background */}
-      <VideoHero
-        videoSrc="/videos/hero-bg.mp4"
-        fallbackImage={images.hero}
-        overlayOpacity={0.7}
-        pinkOverlay={true}
-      >
-        <div className="h-full flex flex-col items-center justify-center px-6 max-w-6xl mx-auto">
-          {/* Particle effects */}
-          <ParticleField count={10} />
-          <FloatingBasketballs count={3} />
+    <div className="min-h-screen bg-surface-950 text-surface-50">
+      <MarketingNav />
 
-          {/* Badge */}
+      {/* ════════ HERO ════════ */}
+      <section className="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28">
+        {/* bg mesh */}
+        <div className="absolute inset-0 bg-mesh opacity-40" />
+        {/* bg grid */}
+        <div className="absolute inset-0 bg-grid opacity-20" />
+        {/* glow orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-500/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent-500/20 rounded-full blur-[100px]" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
-            className="mb-8"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+            className="text-center max-w-4xl mx-auto"
           >
-            <span className="inline-flex items-center gap-2 glass-dark px-6 py-3 rounded-full text-sm font-bold tracking-wider uppercase border border-white/10">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              Changing Lives Since 2010
-            </span>
-          </motion.div>
+            {/* badge */}
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-400 text-sm mb-8">
+              <Globe className="w-4 h-4" />
+              The GTM System Built for Global Exporters
+            </motion.div>
 
-          {/* Main headline */}
-          <h1 className="text-5xl md:text-7xl lg:text-9xl font-display text-white mb-6 leading-[0.9] text-center">
-            <SplitText
-              text="EVERY"
-              className="block"
-              charClassName="inline-block"
-              stagger={0.03}
-            />
-            <span className="block mt-2">
-              <SplitText
-                text="DRIBBLE"
-                className=""
-                charClassName="inline-block gradient-text"
-                delay={0.2}
-                stagger={0.03}
-              />
-            </span>
-            <SplitText
-              text="REWRITES"
-              className="block mt-2"
-              charClassName="inline-block"
-              delay={0.4}
-              stagger={0.03}
-            />
-            <span className="block mt-2">
-              <SplitText
-                text="THE FUTURE"
-                className="text-white/95"
-                charClassName="inline-block"
-                delay={0.6}
-                stagger={0.03}
-              />
-            </span>
-          </h1>
+            {/* headline */}
+            <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-6">
+              Sell to America{" "}
+              <span className="gradient-text">from Anywhere</span>
+            </motion.h1>
 
-          {/* Subheadline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto mb-12 font-medium text-center"
-          >
-            Basketball Isn&apos;t Just a Game — It&apos;s a Pathway to Opportunity in India.
-            <br className="hidden sm:block" />
-            <span className="text-white/70">
-              We empower underserved youth in India with basketball, mentorship &amp; life skills — leading to better education, leadership opportunities, and lifelong confidence
-            </span>
-          </motion.p>
+            {/* subtitle */}
+            <motion.p variants={fadeUp} className="text-lg sm:text-xl text-surface-300 max-w-2xl mx-auto mb-10">
+              The all-in-one go-to-market operating system that helps manufacturers and exporters source leads, craft outreach, and close deals in the U.S. market.
+            </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center relative z-20"
-          >
-            <MagneticButton
-              href={siteConfig.donateUrl}
-              className="bg-gradient-to-r from-orange-primary to-orange-light text-black font-bold text-lg px-10 py-5 rounded-full flex items-center gap-2 shadow-glow min-w-[180px] justify-center"
-            >
-              <Heart className="w-5 h-5" />
-              Donate Now
-            </MagneticButton>
+            {/* CTAs */}
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+              <Link href="/dashboard" className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-lg">
+                Start Selling <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link href="#how-it-works" className="inline-flex items-center gap-2 px-8 py-4 text-lg rounded-lg border border-surface-700 text-surface-300 hover:text-surface-50 hover:border-surface-500 transition-colors">
+                See How It Works
+              </Link>
+            </motion.div>
 
-            <MagneticButton
-              onClick={() => setVideoOpen(true)}
-              className="glass border border-white/20 text-white font-bold text-lg px-10 py-5 rounded-full flex items-center gap-2 hover:border-orange-primary/50"
-            >
-              <Play className="w-5 h-5" />
-              Watch Our Story
-            </MagneticButton>
-          </motion.div>
-        </div>
-      </VideoHero>
-
-      {/* STATS TICKER */}
-      <section className="py-6 bg-gradient-to-r from-orange-primary via-orange-light to-orange-primary relative overflow-hidden">
-        <div className="animate-marquee flex gap-16 whitespace-nowrap">
-          {[...Array(2)].map((_, i) => (
-            <div key={i} className="flex gap-16 items-center shrink-0">
-              {tickerStats.map((stat) => (
-                <span key={stat} className="flex items-center gap-16">
-                  <span className="text-black font-bold text-lg">{stat}</span>
-                  <span className="text-black/50">●</span>
-                </span>
+            {/* stats bar */}
+            <motion.div variants={fadeUp} className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto mb-16">
+              {stats.map((s) => (
+                <div key={s.label} className="text-center">
+                  <div className="text-2xl sm:text-3xl font-bold text-surface-50">{s.value}</div>
+                  <div className="text-sm text-surface-400">{s.label}</div>
+                </div>
               ))}
-            </div>
-          ))}
-        </div>
-      </section>
+            </motion.div>
 
-      {/* IMPACT SLIDER - Before/After Comparison */}
-      <section className="py-16 md:py-24 px-6 bg-dark relative overflow-hidden">
-        <GradientOrbs />
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-12">
-            <TextReveal>
-              <p className="text-orange-primary font-bold uppercase tracking-widest mb-4">
-                See The Difference
-              </p>
-            </TextReveal>
-            <h2 className="text-4xl md:text-6xl font-display text-white mb-6">
-              <WordReveal text="Real Impact, Real Numbers" delay={0.2} />
-            </h2>
-          </div>
-
-          <ImpactSlider
-            beforeValue={16}
-            afterValue={85}
-            beforeLabel="National Average"
-            afterLabel="Our Students"
-            title="High School Completion Rate"
-            description="Percentage of students who complete high school"
-            unit="%"
-          />
-        </div>
-      </section>
-
-      {/* HORIZONTAL SCROLL TIMELINE */}
-      <HorizontalTimeline />
-
-      {/* IMPACT STATS with Cards */}
-      <section ref={impactRef} className="py-32 px-6 relative bg-gradient-to-b from-dark-200 to-dark">
-        <FloatingBasketballs count={2} />
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-12">
-            <TextReveal>
-              <p className="text-orange-primary font-bold uppercase tracking-widest mb-4">
-                Our Impact
-              </p>
-            </TextReveal>
-            <h2 className="text-5xl md:text-7xl font-display text-white">
-              <WordReveal text="Numbers That Matter" delay={0.2} />
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                animate={impactInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <TiltCard className="h-full">
-                  <div className="h-full glass border border-white/10 rounded-3xl p-6 md:p-8 text-center hover:border-orange-primary/30 transition-all">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-primary/20 to-orange-light/20 flex items-center justify-center mx-auto mb-4">
-                      <stat.icon className="w-7 h-7 text-orange-primary" />
+            {/* mock dashboard preview */}
+            <motion.div variants={fadeUp} className="relative max-w-5xl mx-auto">
+              <div className="rounded-xl border border-surface-800 bg-surface-900/80 backdrop-blur-sm overflow-hidden shadow-2xl">
+                {/* browser chrome */}
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-surface-800 bg-surface-900">
+                  <div className="w-3 h-3 rounded-full bg-red-500/60" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/60" />
+                  <div className="ml-4 flex-1 max-w-md">
+                    <div className="h-6 rounded bg-surface-800 px-3 flex items-center">
+                      <span className="text-xs text-surface-500">app.globalgtmos.com/dashboard</span>
                     </div>
-                    <AnimatedCounter
-                      value={stat.value}
-                      className="text-4xl md:text-5xl font-display gradient-text"
-                    />
-                    <span className="text-3xl md:text-4xl font-display gradient-text">{stat.suffix}</span>
-                    <p className="text-gray-400 mt-2 text-sm md:text-base">{stat.label}</p>
                   </div>
-                </TiltCard>
+                </div>
+                {/* dashboard body */}
+                <div className="p-6">
+                  {/* stat cards */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    {dashboardStats.map((ds) => (
+                      <div key={ds.label} className="rounded-lg border border-surface-700 bg-surface-800/50 p-4">
+                        <div className="text-sm text-surface-400 mb-1">{ds.label}</div>
+                        <div className="text-xl font-semibold">{ds.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* mini table */}
+                  <div className="rounded-lg border border-surface-700 overflow-hidden">
+                    <div className="grid grid-cols-4 gap-4 px-4 py-2 bg-surface-800 text-xs text-surface-400 font-medium">
+                      <span>Company</span>
+                      <span>Location</span>
+                      <span>Score</span>
+                      <span>Status</span>
+                    </div>
+                    {dashboardRows.map((row) => (
+                      <div key={row.company} className="grid grid-cols-4 gap-4 px-4 py-3 border-t border-surface-800 text-sm">
+                        <span className="font-medium">{row.company}</span>
+                        <span className="text-surface-400">{row.location}</span>
+                        <span className="text-brand-400 font-medium">{row.score}</span>
+                        <span>
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                              row.status === "Hot"
+                                ? "bg-red-500/20 text-red-400"
+                                : "bg-yellow-500/20 text-yellow-400"
+                            }`}
+                          >
+                            {row.status}
+                          </span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ════════ FEATURES ════════ */}
+      <section id="features" className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="text-center mb-16"
+          >
+            <motion.p variants={fadeUp} className="text-brand-400 font-semibold text-sm uppercase tracking-wider mb-3">
+              Features
+            </motion.p>
+            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
+              Everything you need to crack the U.S. market
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-surface-400 max-w-2xl mx-auto">
+              Six integrated modules that take you from zero U.S. presence to a fully-loaded pipeline.
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {features.map((f) => (
+              <motion.div
+                key={f.title}
+                variants={fadeUp}
+                className="group rounded-xl border border-surface-800 bg-surface-900/50 p-6 hover:border-brand-500/40 hover:bg-surface-900 transition-all"
+              >
+                <div className="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 group-hover:bg-brand-500/20 transition-colors">
+                  <f.icon className="w-6 h-6 text-brand-400" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
+                <p className="text-surface-400 text-sm leading-relaxed">{f.description}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
+        </div>
+      </section>
 
-          {/* Additional Impact Stats - Underserved Demographics */}
+      {/* ════════ HOW IT WORKS ════════ */}
+      <section id="how-it-works" className="py-24 bg-surface-900/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6"
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="text-center mb-16"
           >
-            {additionalStats.map((item, index) => (
-              <div key={index} className="glass border border-orange-primary/20 rounded-2xl p-6 md:p-8">
-                <div className="text-3xl md:text-4xl font-display gradient-text mb-2">{item.stat}</div>
-                <p className="text-white font-semibold mb-2">{item.label}</p>
-                <p className="text-gray-400 text-sm">{item.description}</p>
-              </div>
+            <motion.p variants={fadeUp} className="text-brand-400 font-semibold text-sm uppercase tracking-wider mb-3">
+              How It Works
+            </motion.p>
+            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
+              Four steps to your first U.S. deal
+            </motion.h2>
+          </motion.div>
+
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
+            {steps.map((s, i) => (
+              <motion.div key={s.title} variants={fadeUp} className="relative text-center">
+                <div className="text-5xl font-bold text-surface-800 mb-4">{String(i + 1).padStart(2, "0")}</div>
+                <div className="w-14 h-14 rounded-full bg-brand-500/10 flex items-center justify-center mx-auto mb-4">
+                  <s.icon className="w-7 h-7 text-brand-400" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{s.title}</h3>
+                <p className="text-surface-400 text-sm leading-relaxed">{s.description}</p>
+              </motion.div>
             ))}
           </motion.div>
+        </div>
+      </section>
 
-          {/* Comparison bars */}
+      {/* ════════ TEMPLATES ════════ */}
+      <section id="templates" className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-12 glass border border-white/10 rounded-3xl p-8 md:p-12"
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="text-center mb-16"
           >
-            <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-              How We Compare
-            </h3>
-            <ImpactComparison />
+            <motion.p variants={fadeUp} className="text-brand-400 font-semibold text-sm uppercase tracking-wider mb-3">
+              Templates
+            </motion.p>
+            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
+              Proven playbooks, ready to launch
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-surface-400 max-w-2xl mx-auto">
+              Browse battle-tested outreach templates used by exporters in 89 countries.
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {templates.map((t) => (
+              <motion.div
+                key={t.name}
+                variants={fadeUp}
+                className="rounded-xl border border-surface-800 bg-surface-900/50 p-6 hover:border-brand-500/40 transition-all"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-2 py-0.5 rounded text-xs font-medium bg-brand-500/10 text-brand-400">
+                    {t.category}
+                  </span>
+                  <span className="px-2 py-0.5 rounded text-xs font-medium bg-surface-800 text-surface-400">
+                    {t.channel}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold mb-3">{t.name}</h3>
+                <div className="flex items-center gap-4 text-sm text-surface-400">
+                  <span className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    {t.users.toLocaleString()} users
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <BarChart3 className="w-4 h-4" />
+                    {t.replyRate} reply rate
+                  </span>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* WHERE WE WORK - India Map */}
-      <section className="py-32 px-6 bg-dark relative overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <TextReveal>
-              <p className="text-orange-primary font-bold uppercase tracking-widest mb-4">
-                Where We Work
-              </p>
-            </TextReveal>
-            <h2 className="text-4xl md:text-6xl font-display text-white mb-6">
-              <WordReveal text="3 Cities, One Mission" delay={0.2} />
-            </h2>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="text-gray-400 max-w-2xl mx-auto"
-            >
-              From Chennai where it all started, to Bangalore and Hyderabad, we&apos;re building a network of hope across India.
+      {/* ════════ PRICING ════════ */}
+      <section id="pricing" className="py-24 bg-surface-900/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="text-center mb-16"
+          >
+            <motion.p variants={fadeUp} className="text-brand-400 font-semibold text-sm uppercase tracking-wider mb-3">
+              Pricing
             </motion.p>
-          </div>
-
-          <IndiaMap />
-        </div>
-      </section>
-
-      {/* PROGRAMS with Image Reveals */}
-      <section className="py-20 md:py-28 px-6 bg-gradient-to-b from-dark to-dark-200">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <TextReveal>
-              <p className="text-orange-primary font-bold uppercase tracking-widest mb-4">
-                What We Do
-              </p>
-            </TextReveal>
-            <h2 className="text-5xl md:text-7xl font-display text-white">
-              <WordReveal text="Our Programs" delay={0.2} />
-            </h2>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="text-gray-400 mt-4 text-lg"
-            >
-              12 total programs so far across 3 cities in India
+            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
+              Simple, transparent pricing
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-surface-400 max-w-2xl mx-auto">
+              Start free, upgrade when you are ready. No hidden fees, cancel anytime.
             </motion.p>
-          </div>
+          </motion.div>
 
-          <div className="space-y-24">
-            {programs.map((program, index) => (
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+          >
+            {pricingTiers.map((tier) => (
               <motion.div
-                key={program.title}
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.8 }}
-                className={`grid md:grid-cols-2 gap-12 items-center ${
-                  index % 2 === 1 ? 'md:flex-row-reverse' : ''
+                key={tier.name}
+                variants={fadeUp}
+                className={`relative rounded-xl border p-8 ${
+                  tier.popular
+                    ? "border-brand-500 bg-surface-900 shadow-lg shadow-brand-500/10"
+                    : "border-surface-800 bg-surface-900/50"
                 }`}
               >
-                {/* Image */}
-                <div className={index % 2 === 1 ? 'md:order-2' : ''}>
-                  <RevealWrapper direction={index % 2 === 0 ? 'left' : 'right'}>
-                    <div className="relative aspect-[4/3] rounded-3xl overflow-hidden">
-                      <Image
-                        src={program.image}
-                        alt={program.title}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                    </div>
-                  </RevealWrapper>
-                </div>
-
-                {/* Content */}
-                <div className={index % 2 === 1 ? 'md:order-1' : ''}>
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${program.color} flex items-center justify-center mb-6`}>
-                    <program.icon className="w-8 h-8 text-white" />
+                {tier.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-500 text-white text-xs font-semibold">
+                      <Star className="w-3 h-3" /> Most Popular
+                    </span>
                   </div>
-                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                    {program.title}
-                  </h3>
-                  <p className="text-xl text-gray-400 leading-relaxed mb-6">
-                    {program.description}
-                  </p>
-                  <MagneticButton
-                    href={program.link}
-                    className="inline-flex items-center gap-2 text-orange-primary font-bold text-lg hover:gap-4 transition-all"
-                  >
-                    Learn More <ArrowRight className="w-5 h-5" />
-                  </MagneticButton>
+                )}
+                <h3 className="text-xl font-semibold mb-1">{tier.name}</h3>
+                <p className="text-surface-400 text-sm mb-6">{tier.description}</p>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold">{tier.price}</span>
+                  <span className="text-surface-400">{tier.period}</span>
                 </div>
+                <ul className="space-y-3 mb-8">
+                  {tier.features.map((feat) => (
+                    <li key={feat} className="flex items-start gap-2 text-sm text-surface-300">
+                      <CheckCircle2 className="w-4 h-4 text-brand-400 mt-0.5 shrink-0" />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/dashboard"
+                  className={`block text-center py-3 rounded-lg font-medium transition-colors ${
+                    tier.popular
+                      ? "bg-brand-500 hover:bg-brand-600 text-white"
+                      : "border border-surface-700 text-surface-300 hover:text-surface-50 hover:border-surface-500"
+                  }`}
+                >
+                  {tier.cta} <ChevronRight className="inline w-4 h-4" />
+                </Link>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* TESTIMONIALS Carousel */}
-      <section className="py-32 px-6 relative overflow-hidden bg-dark-200">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-primary/5 to-purple-accent/5" />
-        <FloatingBasketballs count={3} />
-
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <TextReveal>
-              <p className="text-orange-primary font-bold uppercase tracking-widest mb-4">
-                Success Stories
-              </p>
-            </TextReveal>
-            <h2 className="text-4xl md:text-6xl font-display text-white">
-              <WordReveal text="Voices of Hope" delay={0.2} />
-            </h2>
-          </div>
-
-          <TestimonialCarousel />
-        </div>
-      </section>
-
-      {/* FUNDRAISING PROGRESS */}
-      <section className="py-32 px-6 bg-dark relative">
-        <GradientOrbs />
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <TextReveal>
-              <p className="text-orange-primary font-bold uppercase tracking-widest mb-4">
-                Join Our Campaign
-              </p>
-            </TextReveal>
-            <h2 className="text-4xl md:text-6xl font-display text-white mb-6">
-              <WordReveal text="Help Us Reach Our Goal" delay={0.2} />
-            </h2>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="text-gray-400 max-w-2xl mx-auto"
-            >
-              Every dollar brings us closer to transforming another young life through basketball and education.
+      {/* ════════ FINAL CTA ════════ */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-brand-500/5 rounded-full blur-[200px] mx-auto w-[600px] h-[400px] top-1/2 -translate-y-1/2" />
+        <div className="relative max-w-3xl mx-auto px-4 text-center">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
+              Ready to sell into{" "}
+              <span className="gradient-text">America</span>?
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-surface-400 text-lg mb-10 max-w-xl mx-auto">
+              Join thousands of global manufacturers already using Global GTM OS to break into the U.S. market.
             </motion.p>
+            <motion.div variants={fadeUp}>
+              <Link href="/dashboard" className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-lg">
+                Get Started Free <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ════════ FOOTER ════════ */}
+      <footer className="border-t border-surface-800 bg-surface-950 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            {/* col 1 — logo */}
+            <div className="col-span-2 md:col-span-1">
+              <div className="text-xl font-bold mb-3">
+                <span className="gradient-text">Global GTM OS</span>
+              </div>
+              <p className="text-surface-400 text-sm leading-relaxed">
+                The go-to-market operating system helping manufacturers sell to America from anywhere in the world.
+              </p>
+            </div>
+
+            {/* col 2 — Product */}
+            <div>
+              <h4 className="font-semibold text-sm mb-4">Product</h4>
+              <ul className="space-y-2 text-sm text-surface-400">
+                <li><Link href="#features" className="hover:text-surface-50 transition-colors">Features</Link></li>
+                <li><Link href="#templates" className="hover:text-surface-50 transition-colors">Templates</Link></li>
+                <li><Link href="#pricing" className="hover:text-surface-50 transition-colors">Pricing</Link></li>
+                <li><Link href="/dashboard" className="hover:text-surface-50 transition-colors">Dashboard</Link></li>
+              </ul>
+            </div>
+
+            {/* col 3 — Resources */}
+            <div>
+              <h4 className="font-semibold text-sm mb-4">Resources</h4>
+              <ul className="space-y-2 text-sm text-surface-400">
+                <li><Link href="#" className="hover:text-surface-50 transition-colors">Blog</Link></li>
+                <li><Link href="#" className="hover:text-surface-50 transition-colors">Documentation</Link></li>
+                <li><Link href="#" className="hover:text-surface-50 transition-colors">API Reference</Link></li>
+                <li><Link href="#" className="hover:text-surface-50 transition-colors">Changelog</Link></li>
+              </ul>
+            </div>
+
+            {/* col 4 — Company */}
+            <div>
+              <h4 className="font-semibold text-sm mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-surface-400">
+                <li><Link href="#" className="hover:text-surface-50 transition-colors">About</Link></li>
+                <li><Link href="#" className="hover:text-surface-50 transition-colors">Careers</Link></li>
+                <li><Link href="#" className="hover:text-surface-50 transition-colors">Privacy</Link></li>
+                <li><Link href="#" className="hover:text-surface-50 transition-colors">Terms</Link></li>
+              </ul>
+            </div>
           </div>
 
-          <FundraisingProgress
-            goal={100000}
-            raised={78500}
-            donors={342}
-            daysLeft={45}
-          />
-
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.8 }}
-            className="text-center mt-12"
-          >
-            <MagneticButton
-              href={siteConfig.donateUrl}
-              className="bg-gradient-to-r from-orange-primary to-orange-light text-black font-bold text-lg px-10 py-5 rounded-full inline-flex items-center gap-2 shadow-glow"
-            >
-              <Heart className="w-5 h-5" />
-              Contribute Now
-            </MagneticButton>
-          </motion.div>
+          <div className="border-t border-surface-800 pt-8 text-center text-sm text-surface-500">
+            &copy; {new Date().getFullYear()} Global GTM OS. All rights reserved.
+          </div>
         </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="py-32 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-primary via-orange-light to-purple-accent" />
-        <ParticleField count={8} className="opacity-20" />
-
-        <div className="max-w-4xl mx-auto relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-5xl md:text-7xl lg:text-8xl font-display text-black mb-6">
-              EVERY SHOT<br />COUNTS
-            </h2>
-            <p className="text-xl md:text-2xl text-black/80 font-medium mb-10 max-w-2xl mx-auto">
-              $50 sponsors a student for a month. $500 changes a life for a year.
-            </p>
-
-            <MagneticButton
-              href={siteConfig.donateUrl}
-              strength={0.4}
-              className="bg-black text-white font-bold text-xl px-12 py-6 rounded-full inline-flex items-center gap-3 hover:bg-dark-200 shadow-2xl"
-            >
-              <Heart className="w-6 h-6" />
-              Make Your Impact Today
-            </MagneticButton>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="mt-8 text-black/60 text-sm"
-            >
-              Hoops Creating Hope is a registered 501(c)(3) nonprofit. All donations are tax-deductible.
-            </motion.p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* VIDEO MODAL */}
-      {videoOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
-          onClick={() => setVideoOpen(false)}
-        >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="relative w-full max-w-5xl aspect-video bg-dark-200 rounded-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setVideoOpen(false)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-orange-primary transition-colors"
-              aria-label="Close video"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <video
-              autoPlay
-              controls
-              playsInline
-              className="w-full h-full object-contain"
-            >
-              <source
-                src="https://www.dropbox.com/scl/fi/ccz40ad6p330skc1d37lo/Hoops-Creating-Hope-Intro.MP4?rlkey=pf5q6xc5s4ih0rqd0pzvnllg8&st=nx5459br&raw=1"
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
-          </motion.div>
-        </motion.div>
-      )}
-    </main>
+      </footer>
+    </div>
   );
 }

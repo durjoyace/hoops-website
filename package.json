@@ -1,5 +1,5 @@
 {
-  "name": "hoops-creating-hope",
+  "name": "global-gtm-os",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -9,13 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@radix-ui/react-dialog": "^1.0.5",
-    "@radix-ui/react-navigation-menu": "^1.1.4",
     "@vercel/analytics": "^1.6.1",
     "@vercel/speed-insights": "^1.3.1",
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.0",
-    "lenis": "^1.3.17",
     "lucide-react": "^0.400.0",
     "next": "^14.2.0",
     "react": "^18.3.0",

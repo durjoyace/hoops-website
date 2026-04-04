@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/_next/'],
+      disallow: ['/api/', '/_next/', '/dashboard/'],
     },
-    sitemap: 'https://hoopscreatinghope.org/sitemap.xml',
+    sitemap: 'https://globalgtmos.com/sitemap.xml',
   }
 }
