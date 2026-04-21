@@ -136,7 +136,7 @@ const boardMembers: TeamMember[] = [
     name: 'Miten Shah',
     title: 'Board Member',
     photo: '/images/team/Miten Shah.jpg',
-    bio: 'Co-Founder of VOYlegal, a legal search firm that works with the top law firms in the world. As an entrepreneur of various ventures, Miten brings business expertise and his expansive network to nonprofit governance. He is committed to driving sustainable growth and impact for youth development programs.',
+    bio: 'Co-Founder of VOYlegal, a legal search firm that works with the top law firms in the world.  As an entrepreneur of various ventures, Miten brings business expertise and his expansive network to nonprofit governance.  He is committed to driving sustainable growth and impact for youth development programs.',
     linkedin: 'https://www.linkedin.com/in/miten-shah-83504643'
   },
   {
