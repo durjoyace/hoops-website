@@ -7,15 +7,18 @@ import { Target, Users, TrendingUp, Sparkles } from 'lucide-react';
 interface FundraisingProgressProps {
   goal: number;
   raised: number;
-  donors: number;
+  /** Optional. Leave out until the real 2026 donor count is known; the donor stats row is hidden without it. */
+  donors?: number;
   daysLeft?: number;
+  year?: number;
 }
 
 export default function FundraisingProgress({
-  goal = 100000,
-  raised = 78500,
-  donors = 342,
-  daysLeft = 45,
+  goal,
+  raised,
+  donors,
+  daysLeft,
+  year = 2026,
 }: FundraisingProgressProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
@@ -53,7 +56,7 @@ export default function FundraisingProgress({
               <Target className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-white text-lg">2025 Fundraising Goal</h3>
+              <h3 className="font-bold text-white text-lg">{year} Fundraising Goal</h3>
               <p className="text-sm text-gray-400">Help us reach our target</p>
             </div>
           </div>
@@ -120,6 +123,7 @@ export default function FundraisingProgress({
         </div>
 
         {/* Stats row */}
+        {donors ? (
         <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -164,6 +168,7 @@ export default function FundraisingProgress({
             <span className="text-xs text-gray-400">Lives Changed</span>
           </motion.div>
         </div>
+        ) : null}
       </motion.div>
 
       {/* Milestones */}

@@ -26,6 +26,10 @@ export default function VideoHero({
   const [isPlaying, setIsPlaying] = useState(true);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
+  // Only mount the <video> after hydration. If it is server-rendered, a missing file can fail
+  // before React attaches the error listener, and the play/mute buttons would stay on screen.
+  const [canRenderVideo, setCanRenderVideo] = useState(false);
+  useEffect(() => setCanRenderVideo(true), []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -44,7 +48,7 @@ export default function VideoHero({
         setIsPlaying(false);
       });
     }
-  }, []);
+  }, [canRenderVideo]);
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -65,7 +69,8 @@ export default function VideoHero({
   };
 
   return (
-    <div ref={containerRef} className="relative h-screen overflow-hidden">
+    // min-h (not h) so the hero grows on short screens instead of clipping its content
+    <div ref={containerRef} className="relative min-h-screen overflow-hidden">
       {/* Video/Image background */}
       <motion.div style={{ y, scale }} className="absolute inset-0">
         {/* Fallback image (shows while video loads or if video fails) */}
@@ -84,7 +89,7 @@ export default function VideoHero({
         </div>
 
         {/* Video */}
-        {!hasVideoError && (
+        {canRenderVideo && !hasVideoError && (
           <video
             ref={videoRef}
             autoPlay
@@ -92,12 +97,17 @@ export default function VideoHero({
             loop
             playsInline
             onLoadedData={() => setIsVideoLoaded(true)}
-            onError={() => setHasVideoError(true)}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
               isVideoLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <source src={videoSrc} type="video/mp4" />
+            {/* A failed <source> fires its error on the <source>, not on <video>, and it doesn't
+                bubble. Listening here is what hides the play/mute buttons when the file is missing. */}
+            <source
+              src={videoSrc}
+              type="video/mp4"
+              onError={() => setHasVideoError(true)}
+            />
           </video>
         )}
 
@@ -118,12 +128,12 @@ export default function VideoHero({
       </motion.div>
 
       {/* Content */}
-      <motion.div style={{ opacity }} className="relative z-10 h-full">
+      <motion.div style={{ opacity }} className="relative z-10 min-h-screen">
         {children}
       </motion.div>
 
       {/* Video controls */}
-      <div className={`absolute bottom-8 right-8 z-20 flex gap-3 ${hasVideoError ? 'hidden' : ''}`}>
+      <div className={`absolute bottom-8 right-8 z-20 flex gap-3 ${hasVideoError || !canRenderVideo ? 'hidden' : ''}`}>
         <motion.button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

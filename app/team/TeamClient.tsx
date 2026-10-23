@@ -23,7 +23,7 @@ const executiveLeadership: TeamMember[] = [
     id: 'shaun',
     name: 'Shaun Jayachandran',
     title: 'Founder & Executive Director',
-    photo: '/images/team/shaun jayachandran.jpg',
+    photo: '/images/team/shaun-jayachandran.jpg',
     bio: 'Shaun founded Hoops Creating Hope in 2012 with a simple theory: basketball could keep kids in school. Today, that theory is proven with 85% of our students completing high school—5.3x the national rate for their demographic. A 2x TEDx speaker and elite basketball coach, Shaun brings a legendary coaching lineage (John Wooden → Lefty Driesell → Morgan Wootten) to youth development in India. He combines 20+ years of coaching excellence with educational leadership expertise to create transformative programs.',
     linkedin: 'https://www.linkedin.com/in/shaunjayachandran',
     credentials: [
@@ -135,8 +135,8 @@ const boardMembers: TeamMember[] = [
     id: 'miten',
     name: 'Miten Shah',
     title: 'Board Member',
-    photo: '/images/team/Miten Shah.jpg',
-    bio: 'Co-Founder of VOYlegal, a legal search firm that works with the top law firms in the world. As an entrepreneur of various ventures, Miten brings business expertise and his expansive network to nonprofit governance. He is committed to driving sustainable growth and impact for youth development programs.',
+    photo: '/images/team/miten-shah.jpg',
+    bio: 'Co-Founder of VOYlegal, a legal search firm that works with the top law firms in the world.  As an entrepreneur of various ventures, Miten brings business expertise and his expansive network to nonprofit governance.  He is committed to driving sustainable growth and impact for youth development programs.',
     linkedin: 'https://www.linkedin.com/in/miten-shah-83504643'
   },
   {
@@ -349,7 +349,8 @@ function FeaturedMemberCard({ member, index, onClick }: { member: TeamMember; in
       </p>
 
       <p className="text-gray-300 leading-relaxed mb-6">
-        {member.bio.split('.').slice(0, 2).join('.')}.
+        {/* Split on sentence ends (period + space) so decimals like "5.3x" aren't cut in half */}
+        {member.bio.split(/(?<=\.)\s+/).slice(0, 2).join(' ')}
       </p>
 
       {member.credentials && (
@@ -382,7 +383,7 @@ export default function TeamClient() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center hero-overlay">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-primary/90 via-orange-light/80 to-purple-accent/90" />
@@ -654,6 +655,6 @@ export default function TeamClient() {
           onClose={() => setSelectedMember(null)}
         />
       )}
-    </main>
+    </div>
   );
 }

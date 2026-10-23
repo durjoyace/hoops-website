@@ -80,6 +80,8 @@ export function SplitText({
           >
             {word}
           </motion.span>
+          {/* Real space between words so screen readers and crawlers don't read "EVERYDRIBBLEREWRITES" */}
+          {index < words.length - 1 && <span className="sr-only"> </span>}
         </span>
       ))}
     </span>
@@ -124,6 +126,7 @@ export function WordReveal({
           >
             {word}
           </motion.span>
+          {index < words.length - 1 && <span className="sr-only"> </span>}
         </span>
       ))}
     </span>
