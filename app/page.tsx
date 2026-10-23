@@ -449,7 +449,6 @@ export default function HomePage() {
             goal={100000}
             raised={78500}
             donors={342}
-            daysLeft={45}
           />
 
           {/* CTA */}

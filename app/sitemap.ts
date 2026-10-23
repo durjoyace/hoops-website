@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { newsArticles } from '@/lib/news-data'
+import { blogPosts } from '@/lib/data/blog-posts'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://hoopscreatinghope.org'
@@ -27,9 +27,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1 : route === '/about' || route === '/programs' ? 0.9 : 0.8,
   }))
 
-  const newsPages = newsArticles.map((article) => ({
-    url: `${baseUrl}/news/${article.id}`,
-    lastModified: new Date(article.date),
+  // Must match the posts the /news/[slug] route actually renders (blogPosts),
+  // otherwise the sitemap advertises URLs that 404.
+  const newsPages = blogPosts.map((post) => ({
+    url: `${baseUrl}/news/${post.slug}`,
+    lastModified: new Date(post.date),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }))

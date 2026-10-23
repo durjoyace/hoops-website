@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import Image from 'next/image';
-import { images } from '@/lib/utils';
+import { images, yearsOfImpact } from '@/lib/utils';
 
 interface TimelineEvent {
   year: string;
@@ -104,7 +104,7 @@ export default function HorizontalTimeline() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-display text-white"
           >
-            14 Years of Impact
+            {yearsOfImpact} Years of Impact
           </motion.h2>
         </div>
 

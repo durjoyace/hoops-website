@@ -7,6 +7,7 @@ import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
 import LoadingScreen from '@/components/LoadingScreen'
 import SmoothScroll from '@/components/SmoothScroll'
+import { siteConfig } from '@/lib/utils'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -60,9 +61,10 @@ const jsonLd = {
   url: 'https://hoopscreatinghope.org',
   logo: 'https://hoopscreatinghope.org/images/hoops-creating-hope.png',
   description: 'Empowering 2,500+ underserved youth in India through basketball, education, and mentorship.',
-  foundingDate: '2010',
-  email: 'info@hoopscreatinghope.org',
-  nonprofitStatus: '501(c)(3)',
+  foundingDate: String(siteConfig.founded),
+  email: siteConfig.email,
+  // schema.org expects an enumeration URL here, not free text like "501(c)(3)"
+  nonprofitStatus: 'https://schema.org/Nonprofit501c3',
   sameAs: [
     'https://www.instagram.com/hoopscreatinghope/',
     'https://www.facebook.com/CrossoverBasketball.India/',

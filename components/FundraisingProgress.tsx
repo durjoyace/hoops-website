@@ -15,7 +15,7 @@ export default function FundraisingProgress({
   goal = 100000,
   raised = 78500,
   donors = 342,
-  daysLeft = 45,
+  daysLeft,
 }: FundraisingProgressProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
