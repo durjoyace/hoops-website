@@ -79,7 +79,10 @@ export default function HomePage() {
   const impactInView = useInView(impactRef, { once: true });
 
   return (
-    <main className="bg-black overflow-x-hidden">
+    // overflow-x-clip (not -hidden): "hidden" turns this wrapper into its own scroll container,
+    // which stops the pinned timeline's position:sticky from ever sticking to the page.
+    // Also a <div>, not <main>: app/layout.tsx already provides the page's one <main> landmark.
+    <div className="bg-black overflow-x-clip">
       {/* HERO SECTION with Video Background */}
       <VideoHero
         videoSrc="/videos/hero-bg.mp4"
@@ -447,11 +450,7 @@ export default function HomePage() {
             </motion.p>
           </div>
 
-          <FundraisingProgress
-            goal={100000}
-            raised={78500}
-            donors={342}
-          />
+          <FundraisingProgress goal={40000} raised={5000} year={2026} />
 
           {/* CTA */}
           <motion.div
@@ -550,6 +549,6 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
       )}
-    </main>
+    </div>
   );
 }

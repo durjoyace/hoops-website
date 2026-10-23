@@ -16,7 +16,7 @@ export default function Error({
   }, [error])
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-6">
+    <div className="min-h-screen flex items-center justify-center px-6">
       <div className="text-center max-w-2xl">
         <h1 className="font-display text-7xl md:text-8xl gradient-text mb-6">Oops</h1>
         <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
@@ -42,6 +42,6 @@ export default function Error({
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

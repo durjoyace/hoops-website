@@ -383,7 +383,7 @@ export default function TeamClient() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center hero-overlay">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-primary/90 via-orange-light/80 to-purple-accent/90" />
@@ -655,6 +655,6 @@ export default function TeamClient() {
           onClose={() => setSelectedMember(null)}
         />
       )}
-    </main>
+    </div>
   );
 }
