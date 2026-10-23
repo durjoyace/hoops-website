@@ -87,7 +87,8 @@ export default function HomePage() {
         overlayOpacity={0.7}
         pinkOverlay={true}
       >
-        <div className="h-full flex flex-col items-center justify-center px-6 max-w-6xl mx-auto">
+        {/* pt clears the fixed nav bar (~73px); pb clears the scroll indicator */}
+        <div className="h-full flex flex-col items-center justify-center px-6 pt-24 pb-28 max-w-6xl mx-auto">
           {/* Particle effects */}
           <ParticleField count={10} />
           <FloatingBasketballs count={3} />
@@ -97,7 +98,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
-            className="mb-8"
+            className="mb-6"
           >
             <span className="inline-flex items-center gap-2 glass-dark px-6 py-3 rounded-full text-sm font-bold tracking-wider uppercase border border-white/10">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
@@ -106,7 +107,8 @@ export default function HomePage() {
           </motion.div>
 
           {/* Main headline */}
-          <h1 className="text-5xl md:text-7xl lg:text-9xl font-display text-white mb-6 leading-[0.9] text-center">
+          {/* Sized by viewport height as well as width so all four lines fit above the fold on wide, short screens */}
+          <h1 className="[font-size:clamp(3rem,min(10vw,11vh),8rem)] font-display text-white mb-6 leading-[0.9] text-center">
             <SplitText
               text="EVERY"
               className="block"
@@ -145,7 +147,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto mb-12 font-medium text-center"
+            className="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto mb-8 font-medium text-center"
           >
             Basketball Isn&apos;t Just a Game — It&apos;s a Pathway to Opportunity in India.
             <br className="hidden sm:block" />
