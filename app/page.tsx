@@ -88,7 +88,7 @@ export default function HomePage() {
         pinkOverlay={true}
       >
         {/* pt clears the fixed nav bar (~73px); pb clears the scroll indicator */}
-        <div className="h-full flex flex-col items-center justify-center px-6 pt-24 pb-28 max-w-6xl mx-auto">
+        <div className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-28 max-w-6xl mx-auto">
           {/* Particle effects */}
           <ParticleField count={10} />
           <FloatingBasketballs count={3} />
